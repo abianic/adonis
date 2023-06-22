@@ -43,7 +43,7 @@ export class EventType {
   @Column({ name: 'description', type: 'text' })
   description: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: false })
   @JoinColumn({
     name: 'user',
   })

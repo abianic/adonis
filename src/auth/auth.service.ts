@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { SALT_ROUDNS } from '../constants';
 import { User } from 'src/users/user.entity';
 import { CreateUserDto } from 'src/users/create-user.dto';
+import { ITokens } from './types';
 
 @Injectable()
 export class AuthService {
@@ -19,14 +20,14 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async signUp(createUserDto: CreateUserDto): Promise<any> {
+  async signUp(createUserDto: CreateUserDto): Promise<ITokens> {
     const newUser = await this.usersService.createUser(createUserDto);
     const tokens = await this.getTokens(newUser);
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
     return tokens;
   }
 
-  async signIn(email: string, pass: string) {
+  async signIn(email: string, pass: string): Promise<ITokens> {
     const user = await this.usersService.findByEmail(email);
     if (!user) throw new BadRequestException('User does not exist');
 
@@ -61,7 +62,7 @@ export class AuthService {
     return bcrypt.compare(value, hashedValue);
   }
 
-  async getTokens(user: User) {
+  async getTokens(user: User): Promise<ITokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {

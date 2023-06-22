@@ -10,10 +10,14 @@ import {
 import { Transform } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { SALT_ROUDNS } from '../constants';
-
+import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
+  @ApiProperty({
+    description: `User email`,
+    example: 'user@example.com',
+  })
   readonly email!: string;
 
   @IsNotEmpty()
@@ -21,10 +25,18 @@ export class CreateUserDto {
     console.log('transform:', transform);
     return bcrypt.hashSync(transform.value as string, SALT_ROUDNS);
   })
+  @ApiProperty({
+    description: `User password`,
+    example: 'MySecurePassword',
+  })
   readonly password?: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
+  @ApiProperty({
+    description: `Name`,
+    example: 'My Cool Name',
+  })
   name: string;
 }

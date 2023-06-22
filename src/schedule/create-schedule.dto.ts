@@ -11,19 +11,11 @@ import {
 } from 'class-validator';
 import { User } from '../users/user.entity';
 
-export class CreateEventTypeDto {
+export class CreateScheduleDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  title: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
-  slug: string;
-
-  @IsString()
-  description: string;
+  name: string;
 
   @IsNotEmpty()
   @IsObject()
