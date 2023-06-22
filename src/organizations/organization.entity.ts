@@ -4,9 +4,19 @@ import {
   CreateDateColumn,
   Entity,
   Column,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
+import { User } from '../users/user.entity';
+
+export enum OrganizationStatus {
+  PENDENTING  = 'pendenting',
+  ACTIVE      = 'active',
+  INACTIVE    = 'inactive',
+  TERMINATED  = 'terminated',
+}
 
 @Entity()
 export class Organization {
@@ -29,6 +39,24 @@ export class Organization {
   })
   updateAt: Date;
 
-  @Column({ name: 'name', type: 'varchar', length: 255 })
+  @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
   name: string;
+
+  @Column({ name: 'address', type: 'varchar', length: 255, nullable: false })
+  address: string;
+
+  @Column({ 
+    name: 'status', 
+    type: 'enum', 
+    enum: OrganizationStatus,
+    default: OrganizationStatus.PENDENTING,
+    nullable: false
+  })
+  status: OrganizationStatus;
+
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({
+    name: 'owner',
+  })
+  owner: User;
 }
