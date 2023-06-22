@@ -28,6 +28,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
+  @ApiOperation({ summary: 'SignUp' })
   @ApiResponse({
     type: LoginResponse,
     status: HttpStatus.OK,
@@ -39,6 +40,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
+  @ApiOperation({ summary: 'Login' })
   @ApiResponse({
     type: LoginResponse,
     status: HttpStatus.OK,
@@ -50,6 +52,7 @@ export class AuthController {
 
   @UseGuards(AccessTokenGuard)
   @Get('profile')
+  @ApiOperation({ summary: 'Get User profile' })
   @ApiResponse({
     type: ProfileResponse,
     status: HttpStatus.OK,
@@ -62,6 +65,7 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
+  @ApiOperation({ summary: 'Refresh Access Token' })
   @ApiResponse({
     type: LoginResponse,
     status: HttpStatus.OK,
