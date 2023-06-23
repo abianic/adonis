@@ -8,18 +8,12 @@ import {
   JoinColumn,
 } from 'typeorm';
 
+import { Status } from '../common/enums/status';
 import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
 
-export enum OrganizationStatus {
-  PENDENTING  = 'pendenting',
-  ACTIVE      = 'active',
-  INACTIVE    = 'inactive',
-  TERMINATED  = 'terminated',
-}
-
 @Entity()
-export class Organization {
+export class Profile {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -48,11 +42,11 @@ export class Organization {
   @Column({ 
     name: 'status', 
     type: 'enum', 
-    enum: OrganizationStatus,
-    default: OrganizationStatus.PENDENTING,
+    enum: Status,
+    default: Status.PENDENTING,
     nullable: false
   })
-  status: OrganizationStatus;
+  status: Status;
 
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({

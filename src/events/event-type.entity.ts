@@ -11,7 +11,7 @@ import {
 import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
 import { Schedule } from '../schedule/schedule.entity';
-import { Team } from '../organizations/team.entity';
+import { Team } from '../profiles/team.entity';
 
 @Entity()
 export class EventType {
