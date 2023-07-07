@@ -22,7 +22,9 @@
     "migrations:generate": "npm run typeorm -- migration:generate",
     "migrations:run": "npm run typeorm -- migration:run",
     "migrations:show": "npm run typeorm -- migration:show",
-    "migrations:drop": "npm run typeorm -- schema:drop"
+    "migrations:drop": "npm run typeorm -- schema:drop",
+    "setup-profiles-types": "ts-node -r tsconfig-paths/register ./src/console/setup-profiles-types.ts",
+    "setup-profiles": "ts-node -r tsconfig-paths/register ./src/console/setup-profiles.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -36,6 +38,7 @@
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "csv-parser": "^3.0.0",
     "joi": "^17.9.2",
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.0",

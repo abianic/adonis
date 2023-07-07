@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
-import { Organization } from './organization.entity';
+import { Profile } from './profile.entity';
 
 @Entity()
 export class Team {
@@ -35,9 +35,9 @@ export class Team {
   @Column({ name: 'name', type: 'varchar', length: 255 })
   name: string;
 
-  @ManyToOne(() => Organization)
+  @ManyToOne(() => Profile)
   @JoinColumn({
     name: 'organization',
   })
-  organization: Organization;
+  organization: Profile;
 }

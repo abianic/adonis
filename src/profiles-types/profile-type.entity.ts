@@ -4,12 +4,14 @@ import {
   CreateDateColumn,
   Entity,
   Column,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class Organization {
+export class ProfileType {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,6 +31,6 @@ export class Organization {
   })
   updateAt: Date;
 
-  @Column({ name: 'name', type: 'varchar', length: 255 })
+  @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
   name: string;
 }
