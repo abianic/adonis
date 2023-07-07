@@ -9,9 +9,8 @@ import {
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
-import { User } from '../users/user.entity';
 import { Schedule } from '../schedule/schedule.entity';
-import { Team } from '../profiles/team.entity';
+import { Profile } from '../profiles/profile.entity';
 
 @Entity()
 export class EventType {
@@ -43,21 +42,15 @@ export class EventType {
   @Column({ name: 'description', type: 'text' })
   description: string;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => Profile, { nullable: false })
   @JoinColumn({
-    name: 'user',
+    name: 'profile',
   })
-  user: User;
+  profile: Profile;
 
   @ManyToOne(() => Schedule, { nullable: true })
   @JoinColumn({
     name: 'schedule',
   })
   schedule: Schedule;
-
-  @ManyToOne(() => Team, { nullable: true })
-  @JoinColumn({
-    name: 'team',
-  })
-  team: Team;
 }
