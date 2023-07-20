@@ -5,16 +5,20 @@ import { Repository, Equal } from 'typeorm';
 import { paginate } from 'src/common/pagination/paginate';
 
 import { EventType } from './event-type.entity';
-import { CreateEventTypeDto } from './create-event-type.dto';
+import { CreateEventTypeDto } from './dtos/create-event-type.dto';
+import { Profile } from 'src/profiles/profile.entity';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class EventTypesService {
   constructor(
     @InjectRepository(EventType)
     private eventTypeRepository: Repository<EventType>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
   ) {}
 
-  async create(data: CreateEventTypeDto) {
+  async create(data: CreateEventTypeDto): Promise<EventType> {
     let eventType = await this.eventTypeRepository.findOne({
       where: {
         slug: data.slug,
@@ -23,7 +27,22 @@ export class EventTypesService {
 
     if (eventType) throw new BadRequestException(`slug already exists`);
 
-    const newEventType = this.eventTypeRepository.create(data);
+    console.log('data:', data);
+    const user = new User();
+    user.id = data.user.id;
+
+    const profile = await this.profileRepository.findOne({
+      where: {
+        owner: user,
+      },
+    });
+
+    console.log('profile:', profile);
+
+    const newEventType = this.eventTypeRepository.create({
+      ...data,
+      profile: profile,
+    });
     return this.eventTypeRepository.save(newEventType);
   }
 
@@ -49,7 +68,7 @@ export class EventTypesService {
     }
 
     if (userId != null) {
-      condition['user'] = Equal(userId);
+      // condition['user'] = Equal(userId);
     }
 
     let sortObject = {};
@@ -59,7 +78,7 @@ export class EventTypesService {
 
     let data = await this.eventTypeRepository.find({
       where: condition,
-      relations: ['user'],
+      // relations: ['user'],
       order: sortObject,
       take: limit,
       skip: startIndex,
@@ -73,5 +92,15 @@ export class EventTypesService {
       data: data,
       ...paginate(dataCount, page, limit, data.length),
     };
+  }
+
+  update(id: number, data: CreateEventTypeDto) {
+    // this.eventTypeRepository.update(id, data);
+    // return this.prisma.todo.update({
+    //   where: {
+    //     id,
+    //   },
+    //   data: todo,
+    // });
   }
 }
