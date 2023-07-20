@@ -1,6 +1,8 @@
 import { IsString, IsNotEmpty, IsNumber, MaxLength, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/user.entity';
+import { ProfileType } from '../../profiles-types/profile-type.entity';
+import { Profile } from '../profile.entity';
 
 export class CreateProfileDto {
   @IsString()
@@ -19,4 +21,14 @@ export class CreateProfileDto {
   @IsNotEmpty()
   @ApiProperty({ description: `profiles's owner` })
   readonly owner: User;
+
+  @IsObject()
+  @IsNotEmpty()
+  @ApiProperty({ description: `profiles's type` })
+  readonly profileType: ProfileType;
+
+  @IsObject()
+  @IsNotEmpty()
+  @ApiProperty({ description: `profiles's parent` })
+  readonly parent: Profile;
 }

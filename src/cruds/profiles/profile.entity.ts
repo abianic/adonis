@@ -15,6 +15,7 @@ import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
 import { EventType } from '../events/event-type.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProfileType } from '../profiles-types/profile-type.entity';
 
 @Entity()
 export class Profile {
@@ -66,4 +67,18 @@ export class Profile {
     name: 'owner',
   })
   owner: User;
+
+  @ApiProperty({ example: ProfileType })
+  @OneToOne(() => ProfileType, { nullable: false, eager:true })
+  @JoinColumn({
+    name: 'profile_type_id',
+  })
+  profileType: ProfileType;
+
+  @ApiProperty({ example: Profile })
+  @OneToOne(() => Profile, { nullable: true, eager:true })
+  @JoinColumn({
+    name: 'parent_id',
+  })
+  parent: Profile;
 }

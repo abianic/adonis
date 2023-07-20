@@ -41,7 +41,7 @@ import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { Profile } from './profile.entity';
 
 @ApiTags('profiles')
-@Controller('V1/cruds/profiles')
+@Controller('profiles')
 export class ProfilesController {
   constructor(
     private profilesService: ProfilesService

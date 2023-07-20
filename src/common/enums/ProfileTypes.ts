@@ -3,4 +3,5 @@ export enum ProfileTypes {
   ORGANIZATION  = 'Organization',
   TEAM          = 'Team',
   WORKER        = 'WORKER',
+  ONEMAN        = 'One-man Organization'
 }

@@ -90,7 +90,7 @@ export class ProfilesService {
    */
   async create(data: CreateProfileDto) {
     const { name } = data;
-
+    console.log(data);
     let profile = await this.entityProfileRepository.findOneBy({ name: name });
 
     if (profile) throw new BadRequestException(`Profile already exists`);

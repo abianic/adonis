@@ -5,13 +5,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CrudsModule } from './cruds/cruds.module'
+import { ProcessModule } from './process/process.module'
 
 @Module({
   imports: [
     ConfigurationModule, 
     AuthModule,  
     DatabaseModule, 
-    CrudsModule
+    CrudsModule,
+    ProcessModule
   ],
   controllers: [AppController],
   providers: [AppService],

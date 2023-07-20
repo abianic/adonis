@@ -49,4 +49,17 @@ export class ProfilesTypesService {
   findById(id: number): Promise<ProfileType> {
     return this.profileTypeRepository.findOneBy({ id: id});
   }
+
+  /**
+   * Get one profile type by id
+   * @param name a profile type name
+   * @returns Promise<ProfileType>
+   */
+  async findByName(name: string): Promise<ProfileType> {
+    return await  this.profileTypeRepository.findOne({
+      where: {
+        name: name,
+      },
+    });
+  }
 }

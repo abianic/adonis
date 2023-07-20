@@ -28,7 +28,7 @@ import { RolesService } from './roles.service';
 import { Rol } from './rol.entity';
 
 @ApiTags('roles')
-@Controller('V1/cruds/roles')
+@Controller('roles')
 export class ProfilesController {
   constructor(
     private rolesService: RolesService,

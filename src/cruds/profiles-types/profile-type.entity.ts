@@ -9,10 +9,12 @@ import {
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class ProfileType {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ example: 1 })
   id: number;
 
   @Exclude()
@@ -32,5 +34,6 @@ export class ProfileType {
   updateAt: Date;
 
   @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
+  @ApiProperty({ example: "Tipo de perfil" })
   name: string;
 }
