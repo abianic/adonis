@@ -17,9 +17,15 @@ import { UpdateProfileDto } from './dtos/update-profile.dto';
 export class ProfilesService {
   constructor(
     @InjectRepository(Profile)
-    private entityProfile: Repository<Profile>,
+    private entityProfileRepository: Repository<Profile>,
   ) {}
 
+  /**
+   * Get all the profiles with pagination
+   * @param param0 
+   * @param userId user id
+   * @returns 
+   */
   async findAll({ limit, page, search, orderBy, sortedBy }, userId) {
     if (!page) page = 1;
     if (!limit) limit = 30;
@@ -50,7 +56,7 @@ export class ProfilesService {
       sortObject[orderBy] = sortedBy;
     }
 
-    let data = await this.entityProfile.find({
+    let data = await this.entityProfileRepository.find({
       where: condition,
       relations: ['owner'],
       order: sortObject,
@@ -58,7 +64,7 @@ export class ProfilesService {
       skip: startIndex,
     });
 
-    let dataCount = await this.entityProfile.count({
+    let dataCount = await this.entityProfileRepository.count({
       where: condition,
     });
 
@@ -68,30 +74,54 @@ export class ProfilesService {
     };
   }
 
+  /**
+   * Get one profile by id
+   * @param id a profile id
+   * @returns Profile
+   */
   findById(id: number) {
-    return this.entityProfile.findOneBy({ id: id});
+    return this.entityProfileRepository.findOneBy({ id: id});
   }
 
+  /**
+   * Create a new Profile
+   * @param data Objet with the information to create a new profile
+   * @returns Profile
+   */
   async create(data: CreateProfileDto) {
     const { name } = data;
 
-    let profile = await this.entityProfile.findOneBy({ name: name });
+    let profile = await this.entityProfileRepository.findOneBy({ name: name });
 
     if (profile) throw new BadRequestException(`Profile already exists`);
 
-    const newProfile = this.entityProfile.create(data);
-    return await this.entityProfile.save(newProfile);
+    const newProfile = this.entityProfileRepository.create(data);
+    return await this.entityProfileRepository.save(newProfile);
   }
 
+  /**
+   * 
+   * @param id a profile id
+   * @param changes Objet with the information to edit a  profile
+   * @returns Profile
+   */
   async update(id: number, changes: UpdateProfileDto) {
-    const profile = await this.entityProfile.update(id, changes);
-    if (!profile) {
-      throw new NotFoundException(`Profile #${id} not found`);
-    }
-    return profile;
+    return await this.entityProfileRepository.update(id, changes).then(updatedResult => {
+      console.log('Número de filas afectadas:', updatedResult.affected); 
+      console.log('registro afectado:', updatedResult.raw);
+      console.log(updatedResult.generatedMaps);
+      return this.entityProfileRepository.findOneBy({ id: id });
+    }).catch(error => {
+      console.error('Error al actualizar:', error);
+    });
   }
 
+  /**
+   * 
+   * @param profile Object with the profile information
+   * @returns Profile
+   */
   remove(profile: Profile) {
-    return this.entityProfile.remove(profile);
+    return this.entityProfileRepository.remove(profile);
   }
 }
