@@ -106,7 +106,7 @@ export class ProfilesController {
   @Put(':id')
   @ApiOperation({ summary: 'Update profile' })
   @ApiResponse({
-    description: 'The record has been successfully created.',
+    description: 'The record has been successfully updated.',
     type: Profile,
   })
   @ApiUnauthorizedResponse({
@@ -124,10 +124,33 @@ export class ProfilesController {
     return this.profilesService.update(id, payload);
   }
 
+  @Put(':id/change-status/:status')
+  @ApiOperation({ summary: 'Update the status profile' })
+  @ApiResponse({
+    description: 'The record has been successfully updated.',
+    type: Profile,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Request',
+    type: UnauthorizedResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: BadRequestResponse,
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  changeStatus(
+    @Param('id') id: number, 
+    @Param('status') status: string) { 
+    return this.profilesService.changeStatus(id, {status: status});
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete profile' })
   @ApiResponse({
-    description: 'The record has been successfully created.',
+    description: 'The record has been successfully removed.',
     type: Profile,
   })
   @ApiUnauthorizedResponse({

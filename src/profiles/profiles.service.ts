@@ -118,6 +118,23 @@ export class ProfilesService {
 
   /**
    * 
+   * @param id a profile id
+   * @param changes Objet with the information to edit a  profile
+   * @returns Profile
+   */
+  async changeStatus(id: number, changes: any) {
+    return await this.entityProfileRepository.update(id, changes).then(updatedResult => {
+      console.log('Número de filas afectadas:', updatedResult.affected); 
+      console.log('registro afectado:', updatedResult.raw);
+      console.log(updatedResult.generatedMaps);
+      return this.entityProfileRepository.findOneBy({ id: id });
+    }).catch(error => {
+      console.error('Error al actualizar:', error);
+    });
+  }
+
+  /**
+   * 
    * @param profile Object with the profile information
    * @returns Profile
    */
