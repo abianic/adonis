@@ -5,7 +5,7 @@ import { Repository, Equal } from 'typeorm';
 import { paginate } from 'src/common/pagination/paginate';
 
 import { ProfileType } from './profile-type.entity';
-import { CreateProfileTypeDto } from './create-profile-type.dto';
+import { CreateProfileTypeDto } from './dtos/create-profile-type.dto';
 
 @Injectable()
 export class ProfilesTypesService {
@@ -35,9 +35,18 @@ export class ProfilesTypesService {
   /**
    * @returns Promise<ProfileType[]>
    */
-  async find(): Promise<ProfileType[]> {
+  async findAll(): Promise<ProfileType[]> {
     let data = await this.profileTypeRepository.find();
 
     return data;
+  }
+
+  /**
+   * Get one profile type by id
+   * @param id a profile type id
+   * @returns Promise<ProfileType>
+   */
+  findById(id: number): Promise<ProfileType> {
+    return this.profileTypeRepository.findOneBy({ id: id});
   }
 }
