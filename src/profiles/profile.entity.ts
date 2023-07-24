@@ -14,9 +14,11 @@ import { Status } from '../common/enums/status';
 import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
 import { EventType } from '../events/event-type.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Profile {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -36,25 +38,30 @@ export class Profile {
   })
   updateAt: Date;
 
+  @ApiProperty({ example: "Torcauato Studio" })
   @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
   name: string;
 
+  @ApiProperty({ example: "Martires 28" })
   @Column({ name: 'address', type: 'varchar', length: 255, nullable: false })
   address: string;
 
-  @Column({ 
-    name: 'status', 
-    type: 'enum', 
+  @ApiProperty({ example: Status.PENDENTING })
+  @Column({
+    name: 'status',
+    type: 'enum',
     enum: Status,
     default: Status.PENDENTING,
-    nullable: false
+    nullable: false,
   })
   status: Status;
 
+  @ApiProperty({ example: EventType })
   @OneToMany(() => EventType, (eventType) => eventType.profile)
-  eventTypes: EventType[]
+  eventTypes: EventType[];
 
-  @OneToOne(() => User, { nullable: false })
+  @ApiProperty({ example: User })
+  @OneToOne(() => User, { nullable: false, eager:true })
   @JoinColumn({
     name: 'owner',
   })
