@@ -6,8 +6,8 @@ import { paginate } from 'src/common/pagination/paginate';
 
 import { EventType } from './event-type.entity';
 import { CreateEventTypeDto } from './dtos/create-event-type.dto';
-import { Profile } from 'src/profiles/profile.entity';
-import { User } from 'src/users/user.entity';
+import { Profile } from '../profiles/profile.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class EventTypesService {

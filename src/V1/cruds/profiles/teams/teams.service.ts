@@ -12,7 +12,7 @@ import { paginate } from 'src/common/pagination/paginate';
 import { Team } from './team.entity';
 import { CreateTeamDto } from './dtos/create-team.dto';
 import { UpdateTeamDto } from './dtos/update-team.dto';
-import { Profile } from './profile.entity';
+import { Profile } from '../profile.entity';
 
 @Injectable()
 export class TeamsService {

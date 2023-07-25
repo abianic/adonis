@@ -3,13 +3,13 @@ import {
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../V1/cruds/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { SALT_ROUDNS } from '../constants';
-import { User } from 'src/users/user.entity';
-import { CreateUserDto } from 'src/users/create-user.dto';
+import { User } from '../V1/cruds/users/user.entity';
+import { CreateUserDto } from '../V1/cruds/users/create-user.dto';
 import { ITokens } from './types';
 
 @Injectable()

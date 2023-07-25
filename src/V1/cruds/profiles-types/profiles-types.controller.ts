@@ -28,7 +28,7 @@ import { ProfilesTypesService } from './profiles-types.service';
 import { ProfileType } from './profile-type.entity';
 
 @ApiTags('profiles-types')
-@Controller('profiles-types')
+@Controller('V1/cruds/profiles-types')
 export class ProfilesController {
   constructor(
     private profilesTypesService: ProfilesTypesService,

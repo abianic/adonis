@@ -4,22 +4,14 @@ import { DatabaseModule } from './database/database.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { ProfilesModule } from './profiles/profiles.module';
-import { ProfilesTypesModule } from './profiles-types/profiles-types.module';
-import { ScheduleModule } from './schedule/schedule.module';
-import { EventsModule } from './events/events.module';
+import { CrudsModule } from './V1/cruds/cruds.module'
 
 @Module({
   imports: [
     ConfigurationModule, 
-    AuthModule, 
-    UsersModule, 
+    AuthModule,  
     DatabaseModule, 
-    ProfilesModule, 
-    ProfilesTypesModule,
-    ScheduleModule, 
-    EventsModule
+    CrudsModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,8 +1,8 @@
 import { IsString, IsNotEmpty, IsNumber, MaxLength, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/users/user.entity';
+import { User } from '../../users/user.entity';
 
-export class CreateProfileDto {
+export class UpdateProfileDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(45)

@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventType } from './event-type.entity';
 import { EventTypesController } from './event-types.controller';
 import { EventTypesService } from './event-types.service';
-import { Profile } from 'src/profiles/profile.entity';
+import { Profile } from '../profiles/profile.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EventType, Profile])],
