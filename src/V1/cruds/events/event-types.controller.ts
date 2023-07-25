@@ -14,15 +14,15 @@ import {
 
 import { EventTypesService } from './event-types.service';
 import { CreateEventTypeDto } from './dtos/create-event-type.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
-import { AccessTokenGuard } from '../common/guards/accessToken.guard';
+import { AccessTokenGuard } from '../../../common/guards/accessToken.guard';
 
-import { LimitDto } from '../common/pagination/limit.dto';
-import { PageDto } from '../common/pagination/page.dto';
-import { SearchDto } from '../common/pagination/search.dto';
-import { OrderByDto } from '../common/pagination/order-by.dto';
-import { SortedByDto } from '../common/pagination/sorted-by.dto.';
+import { LimitDto } from '../../../common/pagination/limit.dto';
+import { PageDto } from '../../../common/pagination/page.dto';
+import { SearchDto } from '../../../common/pagination/search.dto';
+import { OrderByDto } from '../../../common/pagination/order-by.dto';
+import { SortedByDto } from '../../../common/pagination/sorted-by.dto.';
 
 import {
   ApiTags,

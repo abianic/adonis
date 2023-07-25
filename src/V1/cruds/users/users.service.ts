@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Equal } from 'typeorm';
 
 import { User } from './user.entity';
-import { SALT_ROUDNS } from '../constants';
+import { SALT_ROUDNS } from '../../../constants';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './create-user.dto';
 import { UpdateUserDto } from './update-user.dto';

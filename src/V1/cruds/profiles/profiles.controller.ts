@@ -33,7 +33,7 @@ import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { UnauthorizedResponse } from 'src/common/responses/unauthorized.response';
 import { BadRequestResponse } from 'src/common/responses/bad-request.response';
 
-import { User } from '../../../users/user.entity';
+import { User } from '../users/user.entity';
 
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dtos/create-profile.dto';

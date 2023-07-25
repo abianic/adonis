@@ -4,7 +4,7 @@ import { ScheduleService } from './schedule.service';
 import { UsersService } from '../users/users.service';
 import { CreateScheduleDto } from './create-schedule.dto';
 import { User } from '../users/user.entity';
-import { AccessTokenGuard } from '../common/guards/accessToken.guard';
+import { AccessTokenGuard } from '../../../common/guards/accessToken.guard';
 import {
   ApiTags,
   ApiOperation,
