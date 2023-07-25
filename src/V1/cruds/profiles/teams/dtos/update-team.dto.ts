@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsNumber, MaxLength, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Profile } from '../profile.entity';
+import { Profile } from '../../profile.entity';
 
 export class UpdateTeamDto {
   @IsString()

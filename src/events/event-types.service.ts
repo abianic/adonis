@@ -6,7 +6,7 @@ import { paginate } from 'src/common/pagination/paginate';
 
 import { EventType } from './event-type.entity';
 import { CreateEventTypeDto } from './dtos/create-event-type.dto';
-import { Profile } from 'src/profiles/profile.entity';
+import { Profile } from '../V1/cruds/profiles/profile.entity';
 import { User } from 'src/users/user.entity';
 
 @Injectable()

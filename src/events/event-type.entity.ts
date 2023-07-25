@@ -10,7 +10,7 @@ import {
 
 import { Exclude } from 'class-transformer';
 import { Schedule } from '../schedule/schedule.entity';
-import { Profile } from '../profiles/profile.entity';
+import { Profile } from '../V1/cruds/profiles/profile.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
