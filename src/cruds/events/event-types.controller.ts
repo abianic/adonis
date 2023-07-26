@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Delete,
 } from '@nestjs/common';
 
 import { EventTypesService } from './event-types.service';
@@ -74,6 +75,14 @@ export class EventTypesController {
     );
   }
 
+  @Get(':eventTypeId')
+  @ApiOperation({ summary: 'A event type' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AccessTokenGuard)
+  findById(@Param('eventTypeId') eventTypeId: number) {
+    return this.eventTypesService.findById(eventTypeId);
+  }
+
   @Post()
   @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access-token')
@@ -107,6 +116,33 @@ export class EventTypesController {
     @Body() todo: CreateEventTypeDto,
     @CurrentUser() user: User,
   ) {
-    // return this.todosService.update(+id, todo);
+    return this.eventTypesService.update(+id, todo);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete profile' })
+  // @ApiResponse({
+  //   description: 'The record has been successfully created.',
+  //   type: Profile,
+  // })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Request',
+    type: UnauthorizedResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: BadRequestResponse,
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AccessTokenGuard)
+  async delete(@Param('id') id: number) {
+    return await this.eventTypesService
+      .findById(id)
+      .then((profile) => {
+        return this.eventTypesService.remove(profile);
+      })
+      .catch((error) => {
+        return error;
+      });
   }
 }

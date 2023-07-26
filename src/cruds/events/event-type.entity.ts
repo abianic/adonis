@@ -47,6 +47,10 @@ export class EventType {
   @Column({ name: 'description', type: 'text' })
   description: string;
 
+  @ApiProperty({ example: '15' })
+  @Column({ name: 'length', type: 'integer' })
+  length: number;
+
   @Exclude({ toPlainOnly: true })
   @ManyToOne(() => Profile, { nullable: false })
   @JoinColumn({
