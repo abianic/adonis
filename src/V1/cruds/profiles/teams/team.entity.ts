@@ -7,12 +7,15 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
+import { Status } from '../../../../common/enums/status';
 import { Exclude } from 'class-transformer';
-import { Profile } from './profile.entity';
+import { Profile } from '../profile.entity';
 
 @Entity()
 export class Team {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,10 +35,26 @@ export class Team {
   })
   updateAt: Date;
 
+  @ApiProperty({ example: "Team 1" })
   @Column({ name: 'name', type: 'varchar', length: 255 })
   name: string;
 
-  @ManyToOne(() => Profile)
+  @ApiProperty({ example: Status.ACTIVE })
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: Status,
+    default: Status.ACTIVE,
+    nullable: false,
+  })
+  status: Status;
+
+  @ApiProperty({ example: "Martires 28" })
+  @Column({ name: 'address', type: 'varchar', length: 255, nullable: false })
+  address: string;
+
+  @ApiProperty({ example: Profile })
+  @ManyToOne(() => Profile, { eager:true })
   @JoinColumn({
     name: 'organization',
   })

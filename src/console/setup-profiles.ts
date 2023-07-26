@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import { ProfilesTypesService } from '../profiles-types/profiles-types.service';
+import { ProfilesTypesService } from '../V1/cruds/profiles-types/profiles-types.service';
 
 async function bootstrap() {
   const application = await NestFactory.createApplicationContext(

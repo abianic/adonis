@@ -5,11 +5,12 @@ import {
   Entity,
   Column,
 } from 'typeorm';
-
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,6 +30,7 @@ export class User {
   })
   updateAt: Date;
 
+  @ApiProperty({ example: "TorcuatoStudio" })
   @Column({
     name: 'username',
     type: 'varchar',
@@ -38,18 +40,23 @@ export class User {
   })
   username: string;
 
+  @ApiProperty({ example: "Torcuato" })
   @Column({ name: 'name', type: 'varchar', length: 255 })
   name: string;
 
+  @ApiProperty({ example: "torcuato@studuio.test" })
   @Column({ name: 'email', type: 'varchar', length: 255, unique: true })
   email: string;
 
+  @ApiProperty({ example: "encrypted" })
   @Column({ name: 'password', type: 'varchar', length: 255, unique: true })
   password: string;
 
+  @ApiProperty({ example: {} })
   @Column('jsonb', { name: 'metadata', nullable: true, default: {} })
   metadata: string;
 
+  @ApiProperty({ example: "string" })
   @Column({ name: 'refresh_token', type: 'text', nullable: true })
   refreshToken: string;
 }

@@ -10,7 +10,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Status } from '../common/enums/status';
+import { Status } from '../../../common/enums/status';
 import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
 import { EventType } from '../events/event-type.entity';
@@ -38,12 +38,15 @@ export class Profile {
   })
   updateAt: Date;
 
+  @ApiProperty({ example: 'Torcauato Studio' })
   @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
   name: string;
 
+  @ApiProperty({ example: 'Martires 28' })
   @Column({ name: 'address', type: 'varchar', length: 255, nullable: false })
   address: string;
 
+  @ApiProperty({ example: Status.PENDENTING })
   @Column({
     name: 'status',
     type: 'enum',
@@ -53,10 +56,12 @@ export class Profile {
   })
   status: Status;
 
+  @ApiProperty({ example: EventType })
   @OneToMany(() => EventType, (eventType) => eventType.profile)
   eventTypes: EventType[];
 
-  @OneToOne(() => User, { nullable: false })
+  @ApiProperty({ example: User })
+  @OneToOne(() => User, { nullable: false, eager: true })
   @JoinColumn({
     name: 'owner',
   })
