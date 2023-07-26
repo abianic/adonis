@@ -95,12 +95,14 @@ export class EventTypesService {
   }
 
   update(id: number, data: CreateEventTypeDto) {
-    // this.eventTypeRepository.update(id, data);
-    // return this.prisma.todo.update({
-    //   where: {
-    //     id,
-    //   },
-    //   data: todo,
-    // });
+    return this.eventTypeRepository.update(id, data);
+  }
+
+  findById(id: number) {
+    return this.eventTypeRepository.findOneBy({ id: id });
+  }
+
+  remove(profile: EventType) {
+    return this.eventTypeRepository.remove(profile);
   }
 }

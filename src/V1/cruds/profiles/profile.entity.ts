@@ -38,11 +38,11 @@ export class Profile {
   })
   updateAt: Date;
 
-  @ApiProperty({ example: "Torcauato Studio" })
+  @ApiProperty({ example: 'Torcauato Studio' })
   @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
   name: string;
 
-  @ApiProperty({ example: "Martires 28" })
+  @ApiProperty({ example: 'Martires 28' })
   @Column({ name: 'address', type: 'varchar', length: 255, nullable: false })
   address: string;
 
@@ -61,7 +61,7 @@ export class Profile {
   eventTypes: EventType[];
 
   @ApiProperty({ example: User })
-  @OneToOne(() => User, { nullable: false, eager:true })
+  @OneToOne(() => User, { nullable: false, eager: true })
   @JoinColumn({
     name: 'owner',
   })
