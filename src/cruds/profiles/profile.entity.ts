@@ -10,7 +10,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Status } from '../../../common/enums/status';
+import { Status } from '../../common/enums/status';
 import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
 import { EventType } from '../events/event-type.entity';

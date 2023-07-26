@@ -4,7 +4,7 @@ import { DatabaseModule } from './database/database.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { CrudsModule } from './V1/cruds/cruds.module'
+import { CrudsModule } from './cruds/cruds.module'
 
 @Module({
   imports: [

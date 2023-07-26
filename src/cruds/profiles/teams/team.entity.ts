@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Status } from '../../../../common/enums/status';
+import { Status } from '../../../common/enums/status';
 import { Exclude } from 'class-transformer';
 import { Profile } from '../profile.entity';
 

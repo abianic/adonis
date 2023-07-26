@@ -30,65 +30,72 @@ import { SearchDto } from '../../../common/pagination/search.dto';
 import { OrderByDto } from '../../../common/pagination/order-by.dto';
 import { SortedByDto } from '../../../common/pagination/sorted-by.dto.';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { UnauthorizedResponse } from 'src/common/responses/unauthorized.response';
-import { BadRequestResponse } from 'src/common/responses/bad-request.response';
+import { UnauthorizedResponse } from '../../../common/responses/unauthorized.response';
+import { BadRequestResponse } from '../../../common/responses/bad-request.response';
 
-import { User } from '../users/user.entity';
 
-import { ProfilesService } from './profiles.service';
-import { CreateProfileDto } from './dtos/create-profile.dto';
-import { UpdateProfileDto } from './dtos/update-profile.dto';
-import { Profile } from './profile.entity';
+import { ProfilesService } from '../profiles.service';
+
+import { TeamsService } from './teams.service';
+import { CreateTeamDto } from './dtos/create-team.dto';
+import { UpdateTeamDto } from './dtos/update-team.dto';
+import { Team } from './team.entity';
 
 @ApiTags('profiles')
 @Controller('V1/cruds/profiles')
-export class ProfilesController {
+export class TeamsController {
   constructor(
-    private profilesService: ProfilesService
+    private profilesService: ProfilesService,
+    private teamService: TeamsService
   ) {}
 
-  @Get()
+  @Get(':profileId/teams')
   @ApiQuery({ name: 'limit', type: LimitDto})
   @ApiQuery({ name: 'page', type: PageDto})
   @ApiQuery({ name: 'search', type: SearchDto})
   @ApiQuery({ name: 'orderBy', type: OrderByDto})
   @ApiQuery({ name: 'sortedBy', type: SortedByDto})
-  @ApiOperation({ summary: 'List of profiles' })
+  @ApiOperation({ summary: 'List of teams by profile' })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   findAll(
+    @Param('profileId') profileId:number, 
     @Query('page') page: PageDto, 
     @Query('limit') limit: LimitDto, 
     @Query('orderBy') orderBy: OrderByDto, 
     @Query('sortedBy') sortedBy: SortedByDto, 
     @Query('search') search: SearchDto,
-    @CurrentUser() user: User,
   ) {
-    return this.profilesService.findAll(
+    return this.teamService.findAll(
       {
         page, 
         limit, 
         search, 
         orderBy, 
         sortedBy
-      }, 
-      user.id
+      },
+      profileId
     );
   }
 
-  @Get(':profileId')
-  @ApiOperation({ summary: 'A profile' })
+  @Get(':profileId/teams/:teamId')
+  @ApiOperation({ summary: 'A Team by a profile' })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  find(@Param('profileId') profileId: number) {
-    return this.profilesService.findById(profileId);
+  async find(
+    @Param('profileId') profileId: number,
+    @Param('teamId') teamId: number
+  ) {
+    let team = await this.teamService.findById(teamId, profileId);
+    console.log(team);
+    return team;
   }
 
-  @Post()
-  @ApiOperation({ summary: 'Create profile' })
+  @Post(':profileId/teams')
+  @ApiOperation({ summary: 'Create a profile team' })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
-    type: Profile,
+    type: Team,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized Request',
@@ -101,15 +108,19 @@ export class ProfilesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() payload: CreateProfileDto) {
-    return this.profilesService.create(payload);
+  async create(
+    @Param('profileId') profileId: number,
+    @Body() payload: CreateTeamDto
+  ) {
+    let profile = await this.profilesService.findById(profileId);
+    return await  this.teamService.create(payload, profile);
   }
 
-  @Put(':id')
-  @ApiOperation({ summary: 'Update profile' })
+  @Put(':profileId/teams/:teamId')
+  @ApiOperation({ summary: 'Update a profile team' })
   @ApiResponse({
     description: 'The record has been successfully updated.',
-    type: Profile,
+    type: Team,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized Request',
@@ -122,15 +133,19 @@ export class ProfilesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  update(@Param('id') id: number, @Body() payload: UpdateProfileDto) {
-    return this.profilesService.update(id, payload);
+  updateTeam(
+    @Param('teamId') teamId: number, 
+    @Param('profileId') profileId: number,
+    @Body() payload: UpdateTeamDto
+  ) {
+    return this.teamService.update(teamId, profileId, payload);
   }
 
-  @Put(':id/change-status/:status')
+  @Put(':profileId/teams/:teamId/change-status/:status')
   @ApiOperation({ summary: 'Update the status profile' })
   @ApiResponse({
     description: 'The record has been successfully updated.',
-    type: Profile,
+    type: Team,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized Request',
@@ -143,17 +158,19 @@ export class ProfilesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  changeStatus(
-    @Param('id') id: number, 
-    @Param('status') status: string) { 
-    return this.profilesService.changeStatus(id, {status: status});
+  changeStatusTeam(
+    @Param('teamId') teamId: number, 
+    @Param('profileId') profileId: number,
+    @Param('status') status: string
+  ) { 
+    return this.teamService.changeStatus(teamId, profileId, {status: status});
   }
 
-  @Delete(':id')
+  @Delete(':profileId/teams/:teamId')
   @ApiOperation({ summary: 'Delete profile' })
   @ApiResponse({
     description: 'The record has been successfully removed.',
-    type: Profile,
+    type: Team,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized Request',
@@ -165,9 +182,12 @@ export class ProfilesController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  async delete(@Param('id') id: number) {
-    return await this.profilesService.findById(id).then((profile) => {
-      return this.profilesService.remove(profile);
+  async deleteTeam(
+    @Param('teamId') teamId: number, 
+    @Param('profileId') profileId: number,
+  ) {
+    return await this.teamService.findById(teamId, profileId).then((team) => {
+      return this.teamService.remove(team);
     }).catch(error => {
       return error;
     });

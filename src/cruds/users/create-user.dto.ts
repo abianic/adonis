@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
-import { SALT_ROUDNS } from '../../../constants';
+import { SALT_ROUDNS } from '../../constants';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
   @IsEmail()

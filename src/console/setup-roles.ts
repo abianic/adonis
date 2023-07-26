@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as csvParser from 'csv-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import { RolesService } from '../V1/cruds/roles/roles.service';
+import { RolesService } from '../cruds/roles/roles.service';
 import { AppService } from '../app.service';
 
 async function parseCSV(filePath: string): Promise<any[]> {

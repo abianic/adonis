@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './signup-user.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
-import { CreateUserDto } from '../V1/cruds/users/create-user.dto';
+import { CreateUserDto } from '../cruds/users/create-user.dto';
 import {
   ApiTags,
   ApiOperation,
