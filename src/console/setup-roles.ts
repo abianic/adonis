@@ -2,8 +2,7 @@ import * as fs from "fs";
 import * as csvParser from 'csv-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import { ProfilesTypesService } from '../cruds/profiles-types/profiles-types.service';
-import { ProfileType } from '../cruds/profiles-types/profile-type.entity';
+import { RolesService } from '../cruds/roles/roles.service';
 import { AppService } from '../app.service';
 
 async function parseCSV(filePath: string): Promise<any[]> {
@@ -31,11 +30,11 @@ async function bootstrap() {
   );
   
   try {
-    let csvFilePath = __dirname+'/../../import_csv_files/profiles_types.csv';
+    let csvFilePath = __dirname+'/../../import_csv_files/roles.csv';
     const parsedData = await parseCSV(csvFilePath);
-    const profileTypeService = application.get(ProfilesTypesService);
+    const rolService = application.get(RolesService);
     await parsedData.forEach((value, index) => {
-      profileTypeService.create({
+      rolService.create({
         name: value.name,
       }).then(pt => {
         console.log(pt);

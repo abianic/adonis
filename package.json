@@ -24,6 +24,7 @@
     "migrations:show": "npm run typeorm -- migration:show",
     "migrations:drop": "npm run typeorm -- schema:drop",
     "setup-profiles-types": "ts-node -r tsconfig-paths/register ./src/console/setup-profiles-types.ts",
+    "setup-roles": "ts-node -r tsconfig-paths/register ./src/console/setup-roles.ts",
     "setup-profiles": "ts-node -r tsconfig-paths/register ./src/console/setup-profiles.ts"
   },
   "dependencies": {
