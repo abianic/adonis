@@ -57,8 +57,13 @@ export class ProfilesService {
     }
 
     let data = await this.entityProfileRepository.find({
+      select: {},
       where: condition,
-      relations: ['owner'],
+      relations: {
+        owner: true,
+        profileType: true,
+        parent: true
+      },
       order: sortObject,
       take: limit,
       skip: startIndex,
@@ -79,8 +84,16 @@ export class ProfilesService {
    * @param id a profile id
    * @returns Profile
    */
-  findById(id: number) {
-    return this.entityProfileRepository.findOneBy({ id: id});
+  async findById(id: number) {
+    return await this.entityProfileRepository.findOne({
+      select: {},
+      where: {id: id},
+      relations: {
+        owner: true,
+        profileType: true,
+        parent: true
+      }
+    });
   }
 
   /**
@@ -110,7 +123,7 @@ export class ProfilesService {
       console.log('Número de filas afectadas:', updatedResult.affected); 
       console.log('registro afectado:', updatedResult.raw);
       console.log(updatedResult.generatedMaps);
-      return this.entityProfileRepository.findOneBy({ id: id });
+      return this.findById(id);
     }).catch(error => {
       console.error('Error al actualizar:', error);
     });
@@ -127,7 +140,7 @@ export class ProfilesService {
       console.log('Número de filas afectadas:', updatedResult.affected); 
       console.log('registro afectado:', updatedResult.raw);
       console.log(updatedResult.generatedMaps);
-      return this.entityProfileRepository.findOneBy({ id: id });
+      return this.findById(id);
     }).catch(error => {
       console.error('Error al actualizar:', error);
     });

@@ -9,8 +9,8 @@ import {
   Allow,
   IsObject,
 } from 'class-validator';
-import { User } from '../../users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/cruds/users/user.entity';
 
 export class CreateEventTypeDto {
   @IsString()

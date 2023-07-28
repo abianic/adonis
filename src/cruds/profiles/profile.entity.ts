@@ -62,21 +62,21 @@ export class Profile {
   eventTypes: EventType[];
 
   @ApiProperty({ example: User })
-  @OneToOne(() => User, { nullable: false, eager:true })
+  @ManyToOne(() => User, { nullable: false })
   @JoinColumn({
     name: 'owner',
   })
   owner: User;
 
   @ApiProperty({ example: ProfileType })
-  @OneToOne(() => ProfileType, { nullable: false, eager:true })
+  @ManyToOne(() => ProfileType, { nullable: true })
   @JoinColumn({
     name: 'profile_type_id',
   })
   profileType: ProfileType;
 
   @ApiProperty({ example: Profile })
-  @OneToOne(() => Profile, { nullable: true, eager:true })
+  @ManyToOne(() => Profile, { nullable: true })
   @JoinColumn({
     name: 'parent_id',
   })
