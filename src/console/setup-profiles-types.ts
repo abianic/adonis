@@ -33,20 +33,25 @@ async function bootstrap() {
   try {
     let csvFilePath = __dirname+'/../../import_csv_files/profiles_types.csv';
     const parsedData = await parseCSV(csvFilePath);
-    const profileTypeService = application.get(ProfilesTypesService);
-    await parsedData.forEach((value, index) => {
-      profileTypeService.create({
-        name: value.name,
-      }).then(pt => {
-        console.log(pt);
-      });
-    });
+    
+    for(const value of parsedData){
+      await processValue(application, value);
+    }
   } catch (error) {
     console.error('Error al parsear el archivo CSV:', error);
   }
 
   await application.close();
   process.exit(0);
+}
+
+async function processValue(application, value){
+  const profileTypeService = application.get(ProfilesTypesService);
+  await profileTypeService.create({
+    name: value.name,
+  }).then(pt => {
+    console.log(pt);
+  });
 }
 
 bootstrap();
