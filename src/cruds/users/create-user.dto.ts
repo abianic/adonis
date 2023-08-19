@@ -18,7 +18,7 @@ export class CreateUserDto {
     description: `User email`,
     example: 'user@example.com',
   })
-  readonly email!: string;
+  email!: string;
 
   @IsNotEmpty()
   @Transform((transform) => {
@@ -29,7 +29,7 @@ export class CreateUserDto {
     description: `User password`,
     example: 'MySecurePassword',
   })
-  readonly password?: string;
+  password?: string;
 
   @IsString()
   @IsNotEmpty()

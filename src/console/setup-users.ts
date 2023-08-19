@@ -2,8 +2,8 @@ import * as fs from "fs";
 import * as csvParser from 'csv-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import { ProfilesTypesService } from '../cruds/profiles-types/profiles-types.service';
-import { ProfileType } from '../cruds/profiles-types/profile-type.entity';
+import { UsersService } from '../cruds/users/users.service';
+import { CreateUserDto } from '../cruds/users/create-user.dto'
 import { AppService } from '../app.service';
 
 async function parseCSV(filePath: string): Promise<any[]> {
@@ -31,9 +31,8 @@ async function bootstrap() {
   );
   
   try {
-    let csvFilePath = __dirname+'/../../import_csv_files/profiles_types.csv';
+    let csvFilePath = __dirname+'/../../import_csv_files/default_users.csv';
     const parsedData = await parseCSV(csvFilePath);
-    
     for(const value of parsedData){
       await processValue(application, value);
     }
@@ -46,11 +45,15 @@ async function bootstrap() {
 }
 
 async function processValue(application, value){
-  const profileTypeService = application.get(ProfilesTypesService);
-  await profileTypeService.create({
-    name: value.name,
-  }).then(pt => {
-    console.log(pt);
+  const userService = application.get(UsersService);
+  let userDto = new CreateUserDto();
+  userDto.email = value.email;
+  userDto.password = value.password;
+  userDto.name = value.name; console.log(userDto);
+  await userService.createUser(userDto).then(us => {
+    console.log(us);
+  }).catch(e => {
+    console.log(e);
   });
 }
 

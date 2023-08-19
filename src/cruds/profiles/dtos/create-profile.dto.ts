@@ -9,26 +9,26 @@ export class CreateProfileDto {
   @IsNotEmpty()
   @MaxLength(45)
   @ApiProperty({ description: `profiles's name` })
-  readonly name: string;
+  name: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   @ApiProperty({ description: `profiles's address` })
-  readonly address: string;
+  address: string;
 
   @IsObject()
   @IsNotEmpty()
   @ApiProperty({ description: `profiles's owner` })
-  readonly owner: User;
+  owner: User;
 
   @IsObject()
   @IsNotEmpty()
   @ApiProperty({ description: `profiles's type` })
-  readonly profileType: ProfileType;
+  profileType: ProfileType;
 
   @IsObject()
   @IsNotEmpty()
   @ApiProperty({ description: `profiles's parent` })
-  readonly parent: Profile;
+  parent: Profile;
 }

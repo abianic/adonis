@@ -34,6 +34,7 @@ import { UnauthorizedResponse } from '../../common/responses/unauthorized.respon
 import { BadRequestResponse } from '../../common/responses/bad-request.response';
 
 import { User } from '../../cruds/users/user.entity';
+import { UsersService } from '../../cruds/users/users.service';
 
 import { ProfilesTypesService } from '../../cruds/profiles-types/profiles-types.service';
 
@@ -42,6 +43,10 @@ import { CreateProfileDto } from '../../cruds/profiles/dtos/create-profile.dto';
 import { UpdateProfileDto } from '../../cruds/profiles/dtos/update-profile.dto';
 import { Profile } from '../../cruds/profiles/profile.entity';
 import { ProfileTypes } from 'src/common/enums/ProfileTypes';
+
+import { CreateOrganizationDto } from './dtos/create-organization.dto';
+import { UpdateOrganizationDto } from './dtos/update-organization.dto';
+
 import { retry } from 'rxjs';
 
 @ApiTags('organizations')
@@ -49,7 +54,8 @@ import { retry } from 'rxjs';
 export class OrganizationsController {
   constructor(
     private profilesService: ProfilesService,
-    private profileTypeService : ProfilesTypesService
+    private profileTypeService : ProfilesTypesService,
+    private userService: UsersService
   ) {}
 
   @Post()
@@ -69,14 +75,25 @@ export class OrganizationsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  async create(@Body() payload: CreateProfileDto) {
-    if(payload.profileType.name !== ProfileTypes.ORGANIZATION
-      && payload.profileType.name !== ProfileTypes.ONEMAN){
-      let br =  new (BadRequestResponse);
-      br.message = "This is not an organization";
-      br.statusCode = 404;
-      return br;
-    }
+  async create(
+    @Body() payload: CreateOrganizationDto,
+    @CurrentUser() user,
+  ) {
+    let theUser = null;
+    await this.userService.findById(user.sub).then(u => {
+      theUser = u;
+    });
+
+    let profileDto = new CreateProfileDto();
+    await this.profileTypeService.findByName(ProfileTypes.ORGANIZATION).then(pt => {
+      profileDto.name = payload.name;
+      profileDto.address = payload.address;
+      profileDto.owner = theUser;
+      profileDto.profileType = pt;
+    });
+    await this.profilesService.getProfileService().then(p => {
+      profileDto.parent = p;
+    });
     
     let profileType = null;
     await this.profileTypeService.findByName(ProfileTypes.TEAM).then(pt => {
@@ -84,19 +101,19 @@ export class OrganizationsController {
     });
 
     let organization = null;
-    await this.profilesService.create(payload).then(og => {
+    await this.profilesService.create(profileDto).then(og => {
       organization = og;
     });
 
-    if(payload.profileType.name === ProfileTypes.ORGANIZATION){
+    if(profileDto.profileType.name === ProfileTypes.ORGANIZATION){
       let parent = null;
       await this.profilesService.findById(organization.id).then(p => {
         parent = p;
       });
       await this.profilesService.create({
-        name : payload.name + " Team 1",
-        address: payload.address,
-        owner: payload.owner,
+        name : profileDto.name + " Team 1",
+        address: profileDto.address,
+        owner: profileDto.owner,
         profileType: profileType,
         parent: parent
       });

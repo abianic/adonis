@@ -154,4 +154,12 @@ export class ProfilesService {
   remove(profile: Profile) {
     return this.entityProfileRepository.remove(profile);
   }
+
+  /**
+   * 
+   * @returns Profile
+   */
+  async getProfileService(){
+    return await this.entityProfileRepository.findOneBy({name: "Adonis"});
+  }
 }

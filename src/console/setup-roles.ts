@@ -32,20 +32,26 @@ async function bootstrap() {
   try {
     let csvFilePath = __dirname+'/../../import_csv_files/roles.csv';
     const parsedData = await parseCSV(csvFilePath);
-    const rolService = application.get(RolesService);
-    await parsedData.forEach((value, index) => {
-      rolService.create({
-        name: value.name,
-      }).then(pt => {
-        console.log(pt);
-      });
-    });
+    for(const value of parsedData){
+      await processValue(application, value);
+    }
   } catch (error) {
     console.error('Error al parsear el archivo CSV:', error);
   }
 
   await application.close();
   process.exit(0);
+}
+
+async function processValue(application, value){
+  const rolService = application.get(RolesService);
+  await rolService.create({
+    name: value.name,
+  }).then(pt => {
+    console.log(pt);
+  }).catch(e => {
+    console.log(e);
+  });
 }
 
 bootstrap();
