@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   Column,
+  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
 
 @Entity()
 export class User {
@@ -59,4 +61,8 @@ export class User {
   @ApiProperty({ example: "string" })
   @Column({ name: 'refresh_token', type: 'text', nullable: true })
   refreshToken: string;
+
+  @ApiProperty({ example: ProfileRbac })
+  @OneToMany(() => ProfileRbac, (profileRbac) => profileRbac.user)
+  profilesRbacs: ProfileRbac[];
 }

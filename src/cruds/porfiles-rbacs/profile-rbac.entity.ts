@@ -13,13 +13,12 @@ import {
 import { Status } from '../../common/enums/status';
 import { Exclude } from 'class-transformer';
 import { User } from '../users/user.entity';
-import { EventType } from '../events/event-type.entity';
+import { Profile } from '../profiles/profile.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { ProfileType } from '../profiles-types/profile-type.entity';
-import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
+import { Rol } from '../roles/rol.entity';
 
 @Entity()
-export class Profile {
+export class ProfileRbac {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
@@ -40,14 +39,6 @@ export class Profile {
   })
   updateAt: Date;
 
-  @ApiProperty({ example: 'Torcauato Studio' })
-  @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
-  name: string;
-
-  @ApiProperty({ example: 'Martires 28' })
-  @Column({ name: 'address', type: 'varchar', length: 255, nullable: true })
-  address: string;
-
   @ApiProperty({ example: Status.PENDENTING })
   @Column({
     name: 'status',
@@ -58,32 +49,24 @@ export class Profile {
   })
   status: Status;
 
-  @ApiProperty({ example: EventType })
-  @OneToMany(() => EventType, (eventType) => eventType.profile)
-  eventTypes: EventType[];
-
-  @ApiProperty({ example: ProfileRbac })
-  @OneToMany(() => ProfileRbac, (profileRbac) => profileRbac.profile)
-  profilesRbacs: ProfileRbac[];
-
   @ApiProperty({ example: User })
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({
-    name: 'owner',
+    name: 'user_id',
   })
-  owner: User;
+  user: User;
 
-  @ApiProperty({ example: ProfileType })
-  @ManyToOne(() => ProfileType, { nullable: true })
+  @ApiProperty({ example: Rol })
+  @ManyToOne(() => Rol, { nullable: false })
   @JoinColumn({
-    name: 'profile_type_id',
+    name: 'rol_id',
   })
-  profileType: ProfileType;
+  rol: Rol;
 
   @ApiProperty({ example: Profile })
-  @ManyToOne(() => Profile, { nullable: true })
+  @ManyToOne(() => Profile, { nullable: false })
   @JoinColumn({
-    name: 'parent_id',
+    name: 'profile_id',
   })
-  parent: Profile;
+  profile: Profile;
 }
