@@ -11,6 +11,10 @@ import { SALT_ROUDNS } from '../constants';
 import { User } from '../cruds/users/user.entity';
 import { CreateUserDto } from '../cruds/users/create-user.dto';
 import { ITokens } from './types';
+import { ProfilesService } from 'src/cruds/profiles/profiles.service';
+import { ProfilesTypesService } from 'src/cruds/profiles-types/profiles-types.service';
+import { CreateProfileDto } from 'src/cruds/profiles/dtos/create-profile.dto';
+import { ProfileTypes } from 'src/common/enums/ProfileTypes';
 
 @Injectable()
 export class AuthService {
@@ -18,12 +22,26 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private profilesService: ProfilesService,
+    private profileTypeService: ProfilesTypesService,
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<ITokens> {
     const newUser = await this.usersService.createUser(createUserDto);
     const tokens = await this.getTokens(newUser);
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+
+    // profile creation
+    let profileDto = new CreateProfileDto();
+    profileDto.name = createUserDto.name;
+    profileDto.owner = newUser;
+
+    await this.profileTypeService.findByName(ProfileTypes.ONEMAN).then((pt) => {
+      profileDto.profileType = pt;
+    });
+
+    await this.profilesService.create(profileDto).then((og) => {});
+
     return tokens;
   }
 

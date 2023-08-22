@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,20 +15,23 @@ async function bootstrap() {
     .setDescription('The Adonis API')
     .setVersion('1.0.0')
     .addBearerAuth(
-      { 
-        description: '[just text field] Please enter token in following format: Bearer <JWT>',
+      {
+        description:
+          '[just text field] Please enter token in following format: Bearer <JWT>',
         name: 'Authorization',
         bearerFormat: 'Bearer',
         scheme: 'Bearer',
         type: 'http',
-        in: 'Header'
+        in: 'Header',
       },
-      'access-token'
+      'access-token',
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+
+  app.useGlobalPipes(new ValidationPipe({ stopAtFirstError: false }));
 
   await app.listen(3000);
 }

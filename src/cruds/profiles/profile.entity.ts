@@ -44,7 +44,7 @@ export class Profile {
   name: string;
 
   @ApiProperty({ example: 'Martires 28' })
-  @Column({ name: 'address', type: 'varchar', length: 255, nullable: false })
+  @Column({ name: 'address', type: 'varchar', length: 255, nullable: true })
   address: string;
 
   @ApiProperty({ example: Status.PENDENTING })

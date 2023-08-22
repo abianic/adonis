@@ -1,15 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsNumber,
-  MaxLength,
-  IsBoolean,
-  IsOptional,
-  IsEmail,
-} from 'class-validator';
-import { Transform } from 'class-transformer';
-import * as bcrypt from 'bcrypt';
-import { SALT_ROUDNS } from '../../constants';
+import { IsString, IsNotEmpty, MaxLength, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateUserDto {
   @IsEmail()
@@ -21,10 +10,6 @@ export class CreateUserDto {
   email!: string;
 
   @IsNotEmpty()
-  @Transform((transform) => {
-    console.log('transform:', transform);
-    return bcrypt.hashSync(transform.value as string, SALT_ROUDNS);
-  })
   @ApiProperty({
     description: `User password`,
     example: 'MySecurePassword',

@@ -145,4 +145,9 @@ export class EventTypesController {
         return error;
       });
   }
+
+  @Get('by-username/:username')
+  findByUsername(@Param('username') username: string) {
+    return this.eventTypesService.findByUsername(username);
+  }
 }

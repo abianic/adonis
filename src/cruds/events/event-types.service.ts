@@ -16,6 +16,8 @@ export class EventTypesService {
     private eventTypeRepository: Repository<EventType>,
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async create(data: CreateEventTypeDto): Promise<EventType> {
@@ -104,5 +106,33 @@ export class EventTypesService {
 
   remove(profile: EventType) {
     return this.eventTypeRepository.remove(profile);
+  }
+
+  async findByUsername(username: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        username: username,
+      },
+    });
+
+    const profile = await this.profileRepository.findOne({
+      where: {
+        owner: user,
+      },
+    });
+
+    const eventTypes = await this.eventTypeRepository.findBy({
+      profile: profile,
+    });
+
+    console.log(
+      '*****************************Backend: eventTypes:',
+      eventTypes,
+    );
+
+    return {
+      name: user.name,
+      eventTypes,
+    };
   }
 }

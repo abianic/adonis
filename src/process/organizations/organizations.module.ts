@@ -6,16 +6,18 @@ import { ProfilesTypesModule } from 'src/cruds/profiles-types/profiles-types.mod
 
 import { OrganizationsController } from './organizations.controller';
 import { UsersModule } from 'src/cruds/users/users.module';
-
+import { OrganizationsService } from './organizations.service';
+import { Profile } from 'src/cruds/profiles/profile.entity';
 
 @Module({
   imports: [
     ProfilesModule,
     ProfilesTypesModule,
-    UsersModule
+    UsersModule,
+    TypeOrmModule.forFeature([Profile]),
   ],
   controllers: [OrganizationsController],
-  providers: [],
+  providers: [OrganizationsService],
   exports: [],
 })
 export class OrganizationsModule {}

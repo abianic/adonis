@@ -1,12 +1,14 @@
-import { IsNumber, IsOptional } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsOptional, Min } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PageDto {
-  @IsNumber()
   @IsOptional()
+  @IsInt()
+  @Min(1)
   @ApiPropertyOptional({
     description: `page number for a query`,
     required: false,
+    default: 1,
   })
-  readonly page?: number;
+  page: number = 1;
 }

@@ -4,6 +4,10 @@ import { ApiProperty } from '@nestjs/swagger';
 export class LimitDto {
   @IsNumber()
   @IsOptional()
-  @ApiProperty({ description: `limit number for a query`, required: false })
-  readonly limit: number;
+  @ApiProperty({
+    description: `limit number for a query`,
+    required: false,
+    default: 30,
+  })
+  limit?: number = 30;
 }
