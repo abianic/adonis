@@ -8,11 +8,15 @@ import { OrganizationsController } from './organizations.controller';
 import { UsersModule } from 'src/cruds/users/users.module';
 import { OrganizationsService } from './organizations.service';
 import { Profile } from 'src/cruds/profiles/profile.entity';
+import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.module';
+import { RolesModule } from 'src/cruds/roles/roles.module';
 
 @Module({
   imports: [
     ProfilesModule,
     ProfilesTypesModule,
+    ProfilesRbacsModule,
+    RolesModule,
     UsersModule,
     TypeOrmModule.forFeature([Profile]),
   ],

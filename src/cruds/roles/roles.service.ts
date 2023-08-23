@@ -42,11 +42,20 @@ export class RolesService {
   }
 
   /**
-   * Get one profile type by id
-   * @param id a profile type id
+   * Get one rol by id
+   * @param id a rol id
    * @returns Promise<Rol>
    */
   findById(id: number): Promise<Rol> {
     return this.rolRepository.findOneBy({ id: id});
+  }
+
+  /**
+   * Get one rol by id
+   * @param name a rol id
+   * @returns Promise<Rol>
+   */
+  findByName(name: string): Promise<Rol> {
+    return this.rolRepository.findOneBy({ name: name});
   }
 }
