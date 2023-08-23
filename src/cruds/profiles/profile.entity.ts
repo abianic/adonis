@@ -16,6 +16,7 @@ import { User } from '../users/user.entity';
 import { EventType } from '../events/event-type.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProfileType } from '../profiles-types/profile-type.entity';
+import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
 
 @Entity()
 export class Profile {
@@ -61,8 +62,12 @@ export class Profile {
   @OneToMany(() => EventType, (eventType) => eventType.profile)
   eventTypes: EventType[];
 
-  @ApiProperty({ example: User })
-  @ManyToOne(() => User, { nullable: false })
+  @ApiProperty({ example: ProfileRbac })
+  @OneToMany(() => ProfileRbac, (profileRbac) => profileRbac.profile)
+  profilesRbacs: ProfileRbac[];
+
+  @ApiProperty({ example: User, type: () => User })
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({
     name: 'owner',
   })

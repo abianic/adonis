@@ -6,12 +6,16 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
 
 import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Rol {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,6 +35,7 @@ export class Rol {
   })
   updateAt: Date;
 
+  @ApiProperty({ example: 'Owner' })
   @Column({ name: 'name', type: 'varchar', length: 45, nullable: false })
   name: string;
 }

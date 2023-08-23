@@ -8,16 +8,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Equal } from 'typeorm';
 
 import { paginate } from 'src/common/pagination/paginate';
+import { Profile } from '../profiles/profile.entity';
+import { CreateProfileRbacDto } from './dtos/create-profile-rbac.dto';
+import { UpdateProfileRbacDto } from './dtos/update-profile-rbac.dto';
+import { ProfileRbac } from './profile-rbac.entity';
 
-import { Profile } from './profile.entity';
-import { CreateProfileDto } from './dtos/create-profile.dto';
-import { UpdateProfileDto } from './dtos/update-profile.dto';
 
 @Injectable()
-export class ProfilesService {
+export class ProfilesRbacsService {
   constructor(
-    @InjectRepository(Profile)
-    private entityProfileRepository: Repository<Profile>,
+    @InjectRepository(ProfileRbac)
+    private entityProfileRbacRepository: Repository<ProfileRbac>,
   ) {}
 
   /**
@@ -48,7 +49,7 @@ export class ProfilesService {
     }
 
     if (userId != null) {
-      condition['owner'] = Equal(userId);
+      condition['user'] = Equal(userId);
     }
 
     let sortObject = {};
@@ -56,22 +57,20 @@ export class ProfilesService {
       sortObject[orderBy] = sortedBy;
     }
 
-    let data = await this.entityProfileRepository.find({
+    let data = await this.entityProfileRbacRepository.find({
       select: {},
       where: condition,
       relations: {
-        owner: true,
-        profileType: true,
-        parent: true,
-        profilesRbacs: true,
-        eventTypes: true
+        user: true,
+        rol: true,
+        profile: true
       },
       order: sortObject,
       take: limit,
       skip: startIndex,
     });
 
-    let dataCount = await this.entityProfileRepository.count({
+    let dataCount = await this.entityProfileRbacRepository.count({
       where: condition,
     });
 
@@ -82,48 +81,49 @@ export class ProfilesService {
   }
 
   /**
-   * Get one profile by id
-   * @param id a profile id
-   * @returns Profile
+   * Get one ProfileRbac by id
+   * @param id a ProfileRbac id
+   * @returns ProfileRbac
    */
-  async findById(id: number) {
-    return await this.entityProfileRepository.findOne({
+  async findById(id: number): Promise<ProfileRbac> {
+    return await this.entityProfileRbacRepository.findOne({
       select: {},
       where: {id: id},
       relations: {
-        owner: true,
-        profileType: true,
-        parent: true,
-        profilesRbacs: true,
-        eventTypes: true
+        user: true,
+        rol: true,
+        profile: true
       }
     });
   }
 
   /**
-   * Create a new Profile
+   * Create a new ProfileRbac
    * @param data Objet with the information to create a new profile
-   * @returns Profile
+   * @returns ProfileRbac
    */
-  async create(data: CreateProfileDto) {
-    const { name } = data;
+  async create(data: CreateProfileRbacDto) {
     console.log(data);
-    let profile = await this.entityProfileRepository.findOneBy({ name: name });
+    let profileRbac = await this.entityProfileRbacRepository.findOneBy({ 
+      user: data.user,
+      rol: data.rol,
+      profile: data.profile
+    });
 
-    if (profile) throw new BadRequestException(`Profile already exists`);
+    if (profileRbac) throw new BadRequestException(`Profile already exists`);
 
-    const newProfile = this.entityProfileRepository.create(data);
-    return await this.entityProfileRepository.save(newProfile);
+    const newProfileRbac = this.entityProfileRbacRepository.create(data);
+    return await this.entityProfileRbacRepository.save(newProfileRbac);
   }
 
   /**
    * 
-   * @param id a profile id
+   * @param id a ProfileRbac id
    * @param changes Objet with the information to edit a  profile
-   * @returns Profile
+   * @returns ProfileRbac
    */
-  async update(id: number, changes: UpdateProfileDto) {
-    return await this.entityProfileRepository.update(id, changes).then(updatedResult => {
+  async update(id: number, changes: UpdateProfileRbacDto) {
+    return await this.entityProfileRbacRepository.update(id, changes).then(updatedResult => {
       console.log('Número de filas afectadas:', updatedResult.affected); 
       console.log('registro afectado:', updatedResult.raw);
       console.log(updatedResult.generatedMaps);
@@ -135,12 +135,12 @@ export class ProfilesService {
 
   /**
    * 
-   * @param id a profile id
+   * @param id a ProfileRbac id
    * @param changes Objet with the information to edit a  profile
-   * @returns Profile
+   * @returns ProfileRbac
    */
   async changeStatus(id: number, changes: any) {
-    return await this.entityProfileRepository.update(id, changes).then(updatedResult => {
+    return await this.entityProfileRbacRepository.update(id, changes).then(updatedResult => {
       console.log('Número de filas afectadas:', updatedResult.affected); 
       console.log('registro afectado:', updatedResult.raw);
       console.log(updatedResult.generatedMaps);
@@ -152,18 +152,10 @@ export class ProfilesService {
 
   /**
    * 
-   * @param profile Object with the profile information
-   * @returns Profile
+   * @param profileRbac Object with the profile information
+   * @returns ProfileRbac
    */
-  remove(profile: Profile) {
-    return this.entityProfileRepository.remove(profile);
-  }
-
-  /**
-   * 
-   * @returns Profile
-   */
-  async getProfileService(){
-    return await this.entityProfileRepository.findOneBy({name: "Adonis"});
+  remove(profileRbac: ProfileRbac) {
+    return this.entityProfileRbacRepository.remove(profileRbac);
   }
 }

@@ -51,6 +51,10 @@ import { retry } from 'rxjs';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { PaginationParamsDto } from 'src/common/pagination/pagination-params.dto';
 import { OrganizationsService } from './organizations.service';
+import { ProfilesRbacsService } from 'src/cruds/porfiles-rbacs/profiles-rbacs.service';
+import { RolesService } from 'src/cruds/roles/roles.service';
+import { Roles } from 'src/common/enums/Roles';
+import { CreateProfileRbacDto } from 'src/cruds/porfiles-rbacs/dtos/create-profile-rbac.dto';
 
 @ApiTags('organizations')
 @Controller('organizations')
@@ -58,6 +62,8 @@ export class OrganizationsController {
   constructor(
     private profilesService: ProfilesService,
     private profileTypeService: ProfilesTypesService,
+    private profileRbacService: ProfilesRbacsService,
+    private rolService: RolesService,
     private userService: UsersService,
     private organizationsService: OrganizationsService,
   ) {}
@@ -80,9 +86,18 @@ export class OrganizationsController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   async create(@Body() payload: CreateOrganizationDto, @CurrentUser() user) {
+    let profileRbacDto = new CreateProfileRbacDto();
+
     let theUser = null;
     await this.userService.findById(user.sub).then((u) => {
+      profileRbacDto.user = u;
       theUser = u;
+    });
+
+    let rolOwner = null;
+    await this.rolService.findByName(Roles.OWNER).then((r) => {
+      profileRbacDto.rol = r;
+      rolOwner = r;
     });
 
     let profileDto = new CreateProfileDto();
@@ -105,21 +120,31 @@ export class OrganizationsController {
 
     let organization = null;
     await this.profilesService.create(profileDto).then((og) => {
+      profileRbacDto.profile = og;
       organization = og;
     });
+
+    await this.profileRbacService.create(profileRbacDto);
 
     if (profileDto.profileType.name === ProfileTypes.ORGANIZATION) {
       let parent = null;
       await this.profilesService.findById(organization.id).then((p) => {
         parent = p;
       });
+
+      let team = null;
       await this.profilesService.create({
         name: profileDto.name + ' Team 1',
         address: profileDto.address,
         owner: profileDto.owner,
         profileType: profileType,
         parent: parent,
+      }).then((te) =>{
+        profileRbacDto.profile = te;
+        team = te
       });
+
+      await this.profileRbacService.create(profileRbacDto);
 
       return parent;
     } else {
