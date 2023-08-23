@@ -66,8 +66,8 @@ export class Profile {
   @OneToMany(() => ProfileRbac, (profileRbac) => profileRbac.profile)
   profilesRbacs: ProfileRbac[];
 
-  @ApiProperty({ example: User })
-  @ManyToOne(() => User, { nullable: false })
+  @ApiProperty({ example: User, type: () => User })
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({
     name: 'owner',
   })

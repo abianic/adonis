@@ -9,6 +9,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
+import { Profile } from '../profiles/profile.entity';
 
 @Entity()
 export class User {

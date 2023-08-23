@@ -6,7 +6,6 @@ import { Profile } from 'src/cruds/profiles/profile.entity';
 
 
 export class UpdateProfileRbacDto {
-  @IsString()
   @IsObject()
   @IsNotEmpty()
   @ApiProperty({ description: `profiles-rbac's user` })

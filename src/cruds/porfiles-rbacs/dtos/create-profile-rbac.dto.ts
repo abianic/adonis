@@ -5,7 +5,6 @@ import { Rol } from 'src/cruds/roles/rol.entity';
 import { Profile } from 'src/cruds/profiles/profile.entity';
 
 export class CreateProfileRbacDto {
-  @IsString()
   @IsObject()
   @IsNotEmpty()
   @ApiProperty({ description: `profiles-rbac's user` })

@@ -47,43 +47,6 @@ export class ProfilesRbacsController {
     private profilesRbacsService: ProfilesRbacsService
   ) {}
 
-  @Get()
-  @ApiQuery({ name: 'limit', type: LimitDto})
-  @ApiQuery({ name: 'page', type: PageDto})
-  @ApiQuery({ name: 'search', type: SearchDto})
-  @ApiQuery({ name: 'orderBy', type: OrderByDto})
-  @ApiQuery({ name: 'sortedBy', type: SortedByDto})
-  @ApiOperation({ summary: 'List of profilesRbacs' })
-  @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('jwt'))
-  findAll(
-    @Query('page') page: PageDto, 
-    @Query('limit') limit: LimitDto, 
-    @Query('orderBy') orderBy: OrderByDto, 
-    @Query('sortedBy') sortedBy: SortedByDto, 
-    @Query('search') search: SearchDto,
-    @CurrentUser() user: User,
-  ) {
-    return this.profilesRbacsService.findAll(
-      {
-        page, 
-        limit, 
-        search, 
-        orderBy, 
-        sortedBy
-      }, 
-      user.id
-    );
-  }
-
-  @Get(':profileId')
-  @ApiOperation({ summary: 'A profile' })
-  @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('jwt'))
-  find(@Param('profileRbacId') profileRbacId: number) {
-    return this.profilesRbacsService.findById(profileRbacId);
-  }
-
   @Post()
   @ApiOperation({ summary: 'Create profile' })
   @ApiCreatedResponse({

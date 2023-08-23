@@ -49,7 +49,7 @@ export class ProfileRbac {
   })
   status: Status;
 
-  @ApiProperty({ example: User })
+  @ApiProperty({ example: User, type: () => User })
   @ManyToOne(() => User, { nullable: false })
   @JoinColumn({
     name: 'user_id',

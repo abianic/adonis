@@ -62,7 +62,9 @@ export class ProfilesService {
       relations: {
         owner: true,
         profileType: true,
-        parent: true
+        parent: true,
+        profilesRbacs: true,
+        eventTypes: true
       },
       order: sortObject,
       take: limit,
@@ -91,7 +93,9 @@ export class ProfilesService {
       relations: {
         owner: true,
         profileType: true,
-        parent: true
+        parent: true,
+        profilesRbacs: true,
+        eventTypes: true
       }
     });
   }

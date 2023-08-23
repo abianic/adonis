@@ -5,11 +5,13 @@ import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 import { EventsModule } from './events/events.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { ProfilesRbacsModule } from './porfiles-rbacs/profiles-rbacs.module';
 
 @Module({
   imports: [
     ProfilesModule, 
     ProfilesTypesModule,
+    ProfilesRbacsModule,
     RolesModule,
     EventsModule,
     ScheduleModule,
