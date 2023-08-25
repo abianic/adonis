@@ -5,24 +5,21 @@ import { paginate } from 'src/common/pagination/paginate';
 import { ProfilesRbacsService } from 'src/cruds/porfiles-rbacs/profiles-rbacs.service';
 import { ProfilesTypesService } from 'src/cruds/profiles-types/profiles-types.service';
 import { Profile } from 'src/cruds/profiles/profile.entity';
-import { ProfilesService } from 'src/cruds/profiles/profiles.service';
 import { User } from 'src/cruds/users/user.entity';
 import { Equal, In, Repository } from 'typeorm';
-import { Status } from '../../common/enums/status';
 
 @Injectable()
-export class OrganizationsService {
+export class TeamsService {
   constructor(
-    private profilesService: ProfilesService,
+    @InjectRepository(Profile)
+    private entityProfileRepository: Repository<Profile>,
     private profileTypeService: ProfilesTypesService,
     private profilesRbacsService: ProfilesRbacsService,
   ) {}
 
   async find({ limit, page, search, orderBy, sortedBy }, user: User) {
     const startIndex = (page - 1) * limit;
-    let condition = {
-      status: In([Status.ACTIVE]),
-    };
+    let condition = {};
 
     // let userId = user.id || null;
 
@@ -53,14 +50,17 @@ export class OrganizationsService {
       sortObject[orderBy] = sortedBy;
     }
 
-    let data = await this.profilesService.find({
+    let data = await this.entityProfileRepository.find({
       where: condition,
       order: sortObject,
       take: limit,
       skip: startIndex,
+      relations: {
+        children: true,
+      },
     });
 
-    let dataCount = await this.profilesService.count({
+    let dataCount = await this.entityProfileRepository.count({
       where: condition,
     });
 
@@ -68,32 +68,5 @@ export class OrganizationsService {
       data: data,
       ...paginate(dataCount, page, limit, data.length),
     };
-  }
-
-  async inactive(id: number) {
-    const children = await this.profilesService.find({
-      where: {
-        parent: Equal(id),
-      },
-    });
-
-    const childrenIds = children.map((child) => child.id);
-    const profileIds = [id, ...childrenIds];
-
-    await this.profilesRbacsService.updatByCriteria(
-      {
-        profile: In(profileIds),
-      },
-      { status: Status.INACTIVE },
-    );
-
-    return this.profilesService.updatByCriteria(
-      {
-        id: In(profileIds),
-      },
-      {
-        status: Status.INACTIVE,
-      },
-    );
   }
 }

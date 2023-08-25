@@ -45,7 +45,7 @@ export class CreateEventTypeDto {
   })
   length: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsObject()
   user: User;
 }

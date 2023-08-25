@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { OrganizationsModule } from './organizations/organizations.module'
+import { OrganizationsModule } from './organizations/organizations.module';
+import { TeamsModule } from './teams/teams.module';
 
 @Module({
-  imports: [
-    OrganizationsModule
-  ],
+  imports: [OrganizationsModule, TeamsModule],
 })
 export class ProcessModule {}

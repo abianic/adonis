@@ -5,26 +5,36 @@ import {
 } from '@nestjs/common';
 import { exec } from 'child_process';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal } from 'typeorm';
+import {
+  Repository,
+  Equal,
+  In,
+  FindManyOptions,
+  FindOptionsWhere,
+} from 'typeorm';
 
 import { paginate } from 'src/common/pagination/paginate';
 
 import { Profile } from './profile.entity';
 import { CreateProfileDto } from './dtos/create-profile.dto';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
+import { Status } from 'src/common/enums/status';
 
 @Injectable()
 export class ProfilesService {
   constructor(
     @InjectRepository(Profile)
     private entityProfileRepository: Repository<Profile>,
+    @InjectRepository(ProfileRbac)
+    private entityProfileRbacRepository: Repository<ProfileRbac>,
   ) {}
 
   /**
    * Get all the profiles with pagination
-   * @param param0 
+   * @param param0
    * @param userId user id
-   * @returns 
+   * @returns
    */
   async findAll({ limit, page, search, orderBy, sortedBy }, userId) {
     if (!page) page = 1;
@@ -64,7 +74,7 @@ export class ProfilesService {
         profileType: true,
         parent: true,
         profilesRbacs: true,
-        eventTypes: true
+        eventTypes: true,
       },
       order: sortObject,
       take: limit,
@@ -89,14 +99,14 @@ export class ProfilesService {
   async findById(id: number) {
     return await this.entityProfileRepository.findOne({
       select: {},
-      where: {id: id},
+      where: { id: id },
       relations: {
         owner: true,
         profileType: true,
         parent: true,
         profilesRbacs: true,
-        eventTypes: true
-      }
+        eventTypes: true,
+      },
     });
   }
 
@@ -108,50 +118,62 @@ export class ProfilesService {
   async create(data: CreateProfileDto) {
     const { name } = data;
     console.log(data);
-    let profile = await this.entityProfileRepository.findOneBy({ name: name });
+    let profile = await this.entityProfileRepository.findOneBy({
+      name: name,
+      status: Status.ACTIVE,
+    });
 
     if (profile) throw new BadRequestException(`Profile already exists`);
 
-    const newProfile = this.entityProfileRepository.create(data);
+    const newProfile = this.entityProfileRepository.create({
+      ...data,
+      status: Status.ACTIVE,
+    });
     return await this.entityProfileRepository.save(newProfile);
   }
 
   /**
-   * 
+   *
    * @param id a profile id
    * @param changes Objet with the information to edit a  profile
    * @returns Profile
    */
   async update(id: number, changes: UpdateProfileDto) {
-    return await this.entityProfileRepository.update(id, changes).then(updatedResult => {
-      console.log('Número de filas afectadas:', updatedResult.affected); 
-      console.log('registro afectado:', updatedResult.raw);
-      console.log(updatedResult.generatedMaps);
-      return this.findById(id);
-    }).catch(error => {
-      console.error('Error al actualizar:', error);
-    });
+    return await this.entityProfileRepository
+      .update(id, changes)
+      .then((updatedResult) => {
+        console.log('Número de filas afectadas:', updatedResult.affected);
+        console.log('registro afectado:', updatedResult.raw);
+        console.log(updatedResult.generatedMaps);
+        return this.findById(id);
+      })
+      .catch((error) => {
+        console.error('Error al actualizar:', error);
+      });
   }
 
   /**
-   * 
+   *
    * @param id a profile id
    * @param changes Objet with the information to edit a  profile
    * @returns Profile
    */
   async changeStatus(id: number, changes: any) {
-    return await this.entityProfileRepository.update(id, changes).then(updatedResult => {
-      console.log('Número de filas afectadas:', updatedResult.affected); 
-      console.log('registro afectado:', updatedResult.raw);
-      console.log(updatedResult.generatedMaps);
-      return this.findById(id);
-    }).catch(error => {
-      console.error('Error al actualizar:', error);
-    });
+    return await this.entityProfileRepository
+      .update(id, changes)
+      .then((updatedResult) => {
+        console.log('Número de filas afectadas:', updatedResult.affected);
+        console.log('registro afectado:', updatedResult.raw);
+        console.log(updatedResult.generatedMaps);
+        return this.findById(id);
+      })
+      .catch((error) => {
+        console.error('Error al actualizar:', error);
+      });
   }
 
   /**
-   * 
+   *
    * @param profile Object with the profile information
    * @returns Profile
    */
@@ -160,10 +182,22 @@ export class ProfilesService {
   }
 
   /**
-   * 
+   *
    * @returns Profile
    */
-  async getProfileService(){
-    return await this.entityProfileRepository.findOneBy({name: "Adonis"});
+  async getProfileService() {
+    return await this.entityProfileRepository.findOneBy({ name: 'Adonis' });
+  }
+
+  async find(params: FindManyOptions<Profile>) {
+    return await this.entityProfileRepository.find(params);
+  }
+
+  async count(params: FindManyOptions<Profile>) {
+    return await this.entityProfileRepository.count(params);
+  }
+
+  async updatByCriteria(criteria: any, partialEntity: any) {
+    return await this.entityProfileRepository.update(criteria, partialEntity);
   }
 }
