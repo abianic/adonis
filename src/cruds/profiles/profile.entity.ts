@@ -86,4 +86,7 @@ export class Profile {
     name: 'parent_id',
   })
   parent: Profile;
+
+  @OneToMany(() => Profile, (user) => user.parent)
+  children: Profile[];
 }

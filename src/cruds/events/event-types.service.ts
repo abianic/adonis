@@ -48,15 +48,12 @@ export class EventTypesService {
     return this.eventTypeRepository.save(newEventType);
   }
 
-  async find({ limit, page, search, orderBy, sortedBy }, userId) {
-    if (!page) page = 1;
-    if (!limit) limit = 30;
-    if (!search) search = '';
-    if (!orderBy) orderBy = '';
-    if (!sortedBy) sortedBy = 'ASC';
+  async find({ limit, page, search, orderBy, sortedBy }, user: User) {
     const startIndex = (page - 1) * limit;
 
     let condition = {};
+
+    let userId = user.id || null;
 
     if (search) {
       const parseSearchParams = search.split(';');
@@ -131,7 +128,7 @@ export class EventTypesService {
     );
 
     return {
-      name: user.name,
+      name: user?.name,
       eventTypes,
     };
   }

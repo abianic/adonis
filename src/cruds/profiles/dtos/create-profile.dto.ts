@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, MaxLength, IsObject } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/user.entity';
 import { ProfileType } from '../../profiles-types/profile-type.entity';

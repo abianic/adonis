@@ -3,33 +3,23 @@ import {
   Get,
   Post,
   Body,
-  Param,
-  Put,
-  Delete,
   Query,
   UseGuards,
-  NotFoundException,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Put,
+  Param,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
-  ApiQuery,
   ApiBearerAuth,
-  ApiResponse,
   ApiCreatedResponse,
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-import { LimitDto } from '../../common/pagination/limit.dto';
-import { PageDto } from '../../common/pagination/page.dto';
-import { SearchDto } from '../../common/pagination/search.dto';
-import { OrderByDto } from '../../common/pagination/order-by.dto';
-import { SortedByDto } from '../../common/pagination/sorted-by.dto.';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UnauthorizedResponse } from '../../common/responses/unauthorized.response';
 import { BadRequestResponse } from '../../common/responses/bad-request.response';
 
@@ -40,14 +30,11 @@ import { ProfilesTypesService } from '../../cruds/profiles-types/profiles-types.
 
 import { ProfilesService } from '../../cruds/profiles/profiles.service';
 import { CreateProfileDto } from '../../cruds/profiles/dtos/create-profile.dto';
-import { UpdateProfileDto } from '../../cruds/profiles/dtos/update-profile.dto';
 import { Profile } from '../../cruds/profiles/profile.entity';
 import { ProfileTypes } from 'src/common/enums/ProfileTypes';
 
 import { CreateOrganizationDto } from './dtos/create-organization.dto';
-import { UpdateOrganizationDto } from './dtos/update-organization.dto';
 
-import { retry } from 'rxjs';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { PaginationParamsDto } from 'src/common/pagination/pagination-params.dto';
 import { OrganizationsService } from './organizations.service';
@@ -55,6 +42,7 @@ import { ProfilesRbacsService } from 'src/cruds/porfiles-rbacs/profiles-rbacs.se
 import { RolesService } from 'src/cruds/roles/roles.service';
 import { Roles } from 'src/common/enums/Roles';
 import { CreateProfileRbacDto } from 'src/cruds/porfiles-rbacs/dtos/create-profile-rbac.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @ApiTags('organizations')
 @Controller('organizations')
@@ -133,16 +121,18 @@ export class OrganizationsController {
       });
 
       let team = null;
-      await this.profilesService.create({
-        name: profileDto.name + ' Team 1',
-        address: profileDto.address,
-        owner: profileDto.owner,
-        profileType: profileType,
-        parent: parent,
-      }).then((te) =>{
-        profileRbacDto.profile = te;
-        team = te
-      });
+      await this.profilesService
+        .create({
+          name: profileDto.name + ' Team 1',
+          address: profileDto.address,
+          owner: profileDto.owner,
+          profileType: profileType,
+          parent: parent,
+        })
+        .then((te) => {
+          profileRbacDto.profile = te;
+          team = te;
+        });
 
       await this.profileRbacService.create(profileRbacDto);
 
@@ -160,5 +150,12 @@ export class OrganizationsController {
     @CurrentUser() user: User,
   ) {
     return this.organizationsService.find(paginationDataDto, user);
+  }
+
+  @Get('/inactive/:id')
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Update the status profile' })
+  inactive(@Param('id') id: number) {
+    return this.organizationsService.inactive(id);
   }
 }
