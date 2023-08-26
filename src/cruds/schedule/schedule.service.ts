@@ -7,8 +7,7 @@ import { paginate } from 'src/common/pagination/paginate';
 
 import { Schedule } from './schedule.entity';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
-import { profile } from 'console';
-import { UpdateScheduleDto } from './dtos/update-schedule.dto copy';
+import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 
 @Injectable()
 export class ScheduleService {
