@@ -185,7 +185,7 @@ export class ProfilesService {
    *
    * @returns Profile
    */
-  async getProfileService() {
+  async getProfileService(): Promise<Profile> {
     return await this.entityProfileRepository.findOneBy({ name: 'Adonis' });
   }
 
