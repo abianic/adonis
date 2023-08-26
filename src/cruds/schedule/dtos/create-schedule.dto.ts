@@ -22,11 +22,10 @@ export class CreateScheduleDto {
 
   @IsNotEmpty()
   @IsObject()
-  @ApiProperty({ description: `schedule's owner` })
-  user: User;
-
-  @IsNotEmpty()
-  @IsObject()
   @ApiProperty({ description: `schedule's profile` })
   profile: Profile;
+
+  @IsOptional()
+  @IsObject()
+  owner: User;
 }

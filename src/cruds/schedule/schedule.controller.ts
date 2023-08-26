@@ -16,6 +16,7 @@ import {
 import { ScheduleService } from './schedule.service';
 import { UsersService } from '../users/users.service';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
+import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 import { User } from '../users/user.entity';
 import { AccessTokenGuard } from '../../common/guards/accessToken.guard';
 import {
@@ -55,7 +56,7 @@ export class ScheduleController {
   @ApiQuery({ name: 'search', type: SearchDto})
   @ApiQuery({ name: 'orderBy', type: OrderByDto})
   @ApiQuery({ name: 'sortedBy', type: SortedByDto})
-  @ApiOperation({ summary: 'List of profiles' })
+  @ApiOperation({ summary: 'List of schedules' })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   findAll(
@@ -79,7 +80,7 @@ export class ScheduleController {
   }
 
   @Get(':scheduleId')
-  @ApiOperation({ summary: 'A profile' })
+  @ApiOperation({ summary: 'A schedule' })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   find(@Param('scheduleId') scheduleId: number) {
@@ -102,10 +103,80 @@ export class ScheduleController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access-token')
   async create(@Body() payload: CreateScheduleDto, @CurrentUser() user) {
-    payload.user = await this.usersService.findById(user.sub);
+    await this.usersService.findById(user.sub).then(u =>{
+      payload.owner = u;
+    });
     return this.scheduleService.create(payload);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update schedule' })
+  @ApiResponse({
+    description: 'The record has been successfully updated.',
+    type: Schedule,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Request',
+    type: UnauthorizedResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: BadRequestResponse,
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  update(@Param('id') id: number, @Body() payload: UpdateScheduleDto) {
+    return this.scheduleService.update(id, payload);
+  }
+
+  @Put(':id/change-status/:status')
+  @ApiOperation({ summary: 'Update the status schedule' })
+  @ApiResponse({
+    description: 'The record has been successfully updated.',
+    type: Schedule,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Request',
+    type: UnauthorizedResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: BadRequestResponse,
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  changeStatus(
+    @Param('id') id: number, 
+    @Param('status') status: string) { 
+    return this.scheduleService.changeStatus(id, {status: status});
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete schedule' })
+  @ApiResponse({
+    description: 'The record has been successfully removed.',
+    type: Schedule,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Request',
+    type: UnauthorizedResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: BadRequestResponse,
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  async delete(@Param('id') id: number) {
+    return await this.scheduleService.findById(id).then((schedule) => {
+      return this.scheduleService.remove(schedule);
+    }).catch(error => {
+      return error;
+    });
   }
 }

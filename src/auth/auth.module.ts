@@ -7,6 +7,8 @@ import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { ProfilesModule } from 'src/cruds/profiles/profiles.module';
 import { ProfilesTypesModule } from 'src/cruds/profiles-types/profiles-types.module';
+import { RolesModule } from 'src/cruds/roles/roles.module';
+import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { ProfilesTypesModule } from 'src/cruds/profiles-types/profiles-types.mod
     JwtModule.register({}),
     ProfilesModule,
     ProfilesTypesModule,
+    ProfilesRbacsModule,
+    RolesModule
   ],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],

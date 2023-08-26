@@ -15,6 +15,10 @@ import { ProfilesService } from 'src/cruds/profiles/profiles.service';
 import { ProfilesTypesService } from 'src/cruds/profiles-types/profiles-types.service';
 import { CreateProfileDto } from 'src/cruds/profiles/dtos/create-profile.dto';
 import { ProfileTypes } from 'src/common/enums/ProfileTypes';
+import { RolesService } from 'src/cruds/roles/roles.service';
+import { Roles } from 'src/common/enums/Roles';
+import { ProfilesRbacsService } from 'src/cruds/porfiles-rbacs/profiles-rbacs.service';
+import { CreateProfileRbacDto } from 'src/cruds/porfiles-rbacs/dtos/create-profile-rbac.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,12 +28,20 @@ export class AuthService {
     private configService: ConfigService,
     private profilesService: ProfilesService,
     private profileTypeService: ProfilesTypesService,
+    private rolService: RolesService,
+    private profileRbacService: ProfilesRbacsService
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<ITokens> {
     const newUser = await this.usersService.createUser(createUserDto);
     const tokens = await this.getTokens(newUser);
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+
+    let profileRbacDto = new CreateProfileRbacDto();
+    profileRbacDto.user = newUser;
+    await this.rolService.findByName(Roles.OWNER).then(ro => {
+      profileRbacDto.rol = ro;
+    });
 
     // profile creation
     let profileDto = new CreateProfileDto();
@@ -40,8 +52,16 @@ export class AuthService {
       profileDto.profileType = pt;
     });
 
-    await this.profilesService.create(profileDto).then((og) => {});
+    await this.profilesService.getProfileService().then(parent => {
+      profileDto.parent = parent;
+    });
 
+    await this.profilesService.create(profileDto).then((og) => {
+      profileRbacDto.profile = og;
+    });
+
+    await this.profileRbacService.create(profileRbacDto);
+    
     return tokens;
   }
 
