@@ -58,6 +58,7 @@ export class ScheduleService {
       relations: {
         owner: true,
         profile: true,
+        availabilities: true,
       },
       order: sortObject,
       take: limit,
@@ -86,6 +87,7 @@ export class ScheduleService {
       relations: {
         owner: true,
         profile: true,
+        availabilities: true,
       }
     });
   }

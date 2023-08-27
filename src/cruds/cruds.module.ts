@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { EventsModule } from './events/events.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ProfilesRbacsModule } from './porfiles-rbacs/profiles-rbacs.module';
+import { AvailabilitiesModule } from './availabilities/availabilities.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProfilesRbacsModule } from './porfiles-rbacs/profiles-rbacs.module';
     RolesModule,
     EventsModule,
     ScheduleModule,
+    AvailabilitiesModule,
     UsersModule
   ],
 })
