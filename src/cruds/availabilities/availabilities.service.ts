@@ -9,6 +9,7 @@ import { Availability } from './availability.entity';
 import { CreateAvailabilityDto } from './dtos/create-availability.dto';
 import { UpdateAvailabilityDto } from './dtos/update-availability.dto';
 import { equal } from 'joi';
+import { Days } from 'src/common/enums/Days';
 
 @Injectable()
 export class AvailabilitiesService {

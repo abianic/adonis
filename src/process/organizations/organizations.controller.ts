@@ -74,72 +74,12 @@ export class OrganizationsController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   async create(@Body() payload: CreateOrganizationDto, @CurrentUser() user) {
-    let profileRbacDto = new CreateProfileRbacDto();
-
     let theUser = null;
     await this.userService.findById(user.sub).then((u) => {
-      profileRbacDto.user = u;
       theUser = u;
     });
 
-    let rolOwner = null;
-    await this.rolService.findByName(Roles.OWNER).then((r) => {
-      profileRbacDto.rol = r;
-      rolOwner = r;
-    });
-
-    let profileDto = new CreateProfileDto();
-    await this.profileTypeService
-      .findByName(ProfileTypes.ORGANIZATION)
-      .then((pt) => {
-        profileDto.name = payload.name;
-        profileDto.address = payload.address;
-        profileDto.owner = theUser;
-        profileDto.profileType = pt;
-      });
-    await this.profilesService.getProfileService().then((p) => {
-      profileDto.parent = p;
-    });
-
-    let profileType = null;
-    await this.profileTypeService.findByName(ProfileTypes.TEAM).then((pt) => {
-      profileType = pt;
-    });
-
-    let organization = null;
-    await this.profilesService.create(profileDto).then((og) => {
-      profileRbacDto.profile = og;
-      organization = og;
-    });
-
-    await this.profileRbacService.create(profileRbacDto);
-
-    if (profileDto.profileType.name === ProfileTypes.ORGANIZATION) {
-      let parent = null;
-      await this.profilesService.findById(organization.id).then((p) => {
-        parent = p;
-      });
-
-      let team = null;
-      await this.profilesService
-        .create({
-          name: profileDto.name + ' Team 1',
-          address: profileDto.address,
-          owner: profileDto.owner,
-          profileType: profileType,
-          parent: parent,
-        })
-        .then((te) => {
-          profileRbacDto.profile = te;
-          team = te;
-        });
-
-      await this.profileRbacService.create(profileRbacDto);
-
-      return parent;
-    } else {
-      return organization;
-    }
+    return await this.organizationsService.processToCreateOrganization(payload, theUser)
   }
 
   @Get()

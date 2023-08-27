@@ -9,6 +9,8 @@ import { ProfilesModule } from 'src/cruds/profiles/profiles.module';
 import { ProfilesTypesModule } from 'src/cruds/profiles-types/profiles-types.module';
 import { RolesModule } from 'src/cruds/roles/roles.module';
 import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.module';
+import { ScheduleModule } from 'src/cruds/schedule/schedule.module';
+import { AvailabilitiesModule } from 'src/cruds/availabilities/availabilities.module';
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.mod
     ProfilesModule,
     ProfilesTypesModule,
     ProfilesRbacsModule,
-    RolesModule
+    RolesModule,
+    ScheduleModule,
+    AvailabilitiesModule
   ],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],

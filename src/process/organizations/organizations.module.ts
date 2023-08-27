@@ -8,6 +8,8 @@ import { UsersModule } from 'src/cruds/users/users.module';
 import { OrganizationsService } from './organizations.service';
 import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.module';
 import { RolesModule } from 'src/cruds/roles/roles.module';
+import { ScheduleModule } from 'src/cruds/schedule/schedule.module';
+import { AvailabilitiesModule } from 'src/cruds/availabilities/availabilities.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { RolesModule } from 'src/cruds/roles/roles.module';
     ProfilesRbacsModule,
     RolesModule,
     UsersModule,
+    ScheduleModule,
+    AvailabilitiesModule
   ],
   controllers: [OrganizationsController],
   providers: [OrganizationsService],
