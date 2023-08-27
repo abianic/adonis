@@ -5,19 +5,17 @@ import {
   Entity,
   Column,
   ManyToOne,
-  OneToMany,
   JoinColumn,
 } from 'typeorm';
 
+import { Days } from '../../common/enums/Days';
 import { Status } from '../../common/enums/status';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { User } from '../users/user.entity';
-import { Profile } from '../profiles/profile.entity';
-import { Availability } from '../availabilities/availability.entity';
+import { Schedule } from '../schedule/schedule.entity';
 
 @Entity()
-export class Schedule {
+export class Availability {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
@@ -38,9 +36,30 @@ export class Schedule {
   })
   updateAt: Date;
 
-  @ApiProperty({ example: 'Default' })
-  @Column({ name: 'name', type: 'varchar', length: 255 })
-  name: string;
+  @ApiProperty({ example: Days.LUNES })
+  @Column({
+    name: 'day',
+    type: 'enum',
+    enum: Days,
+    nullable: false,
+  })
+  day: Days;
+
+  @ApiProperty({ example: "08:00:00" })
+  @Column({
+    name: 'begin_at',
+    type: 'time',
+    nullable: false,
+  })
+  beginAt: string;
+
+  @ApiProperty({ example: "19:00:00" })
+  @Column({
+    name: 'end_at',
+    type: 'time',
+    nullable: false,
+  })
+  endAt: string;
 
   @ApiProperty({ example: Status.ACTIVE })
   @Column({
@@ -52,21 +71,10 @@ export class Schedule {
   })
   status: Status;
 
-  @ApiProperty({ example: User, type: () => User })
-  @ManyToOne(() => User)
+  @ApiProperty({ example: Schedule, type: () => Schedule })
+  @ManyToOne(() => Schedule, { nullable: false })
   @JoinColumn({
-    name: 'user_id',
+    name: 'schedule_id',
   })
-  owner: User;
-
-  @ApiProperty({ example: Profile, type: () => Profile })
-  @ManyToOne(() => Profile, { nullable: true })
-  @JoinColumn({
-    name: 'profile_id',
-  })
-  profile: Profile;
-
-  @ApiProperty({ example: Availability })
-  @OneToMany(() => Availability, (Availability) => Availability.schedule)
-  availabilities: Availability[]; 
+  schedule: Schedule;
 }
