@@ -19,6 +19,11 @@ import { RolesService } from 'src/cruds/roles/roles.service';
 import { Roles } from 'src/common/enums/Roles';
 import { ProfilesRbacsService } from 'src/cruds/porfiles-rbacs/profiles-rbacs.service';
 import { CreateProfileRbacDto } from 'src/cruds/porfiles-rbacs/dtos/create-profile-rbac.dto';
+import { CreateScheduleDto } from 'src/cruds/schedule/dtos/create-schedule.dto';
+import { ScheduleService } from 'src/cruds/schedule/schedule.service';
+import { AvailabilitiesService } from 'src/cruds/availabilities/availabilities.service';
+import { Days } from 'src/common/enums/Days';
+import { CreateAvailabilityDto } from 'src/cruds/availabilities/dtos/create-availability.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +34,9 @@ export class AuthService {
     private profilesService: ProfilesService,
     private profileTypeService: ProfilesTypesService,
     private rolService: RolesService,
-    private profileRbacService: ProfilesRbacsService
+    private profileRbacService: ProfilesRbacsService,
+    private ScheduleService: ScheduleService,
+    private AvailabilityService: AvailabilitiesService
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<ITokens> {
@@ -61,6 +68,26 @@ export class AuthService {
     });
 
     await this.profileRbacService.create(profileRbacDto);
+
+    let scheduleDto = new CreateScheduleDto();
+    scheduleDto.name = "Default";
+    scheduleDto.owner = newUser;
+    scheduleDto.profile = profileRbacDto.profile;
+    let newSchedule = null;
+    await this.ScheduleService.create(scheduleDto).then(s => {
+      newSchedule = s;
+    });
+
+    const days = Object.values(Days);
+    for(const day of days){
+      let availabilityDto = new  CreateAvailabilityDto();
+      availabilityDto.day = day;
+      availabilityDto.beginAt = "08:00:00";
+      availabilityDto.endAt = "18:00:00";
+      availabilityDto.schedule = newSchedule;
+
+      await this.AvailabilityService.create(availabilityDto);
+    }
     
     return tokens;
   }
