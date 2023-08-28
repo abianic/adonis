@@ -1,4 +1,12 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { User } from '../../cruds/users/user.entity';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
@@ -19,5 +27,19 @@ export class TeamsController {
     @CurrentUser() user: User,
   ) {
     return this.teamsService.find(paginationDataDto, user);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a team' })
+  @UseGuards(AccessTokenGuard)
+  async create(@Body() payload: any, @CurrentUser() user) {
+    return this.teamsService.create(payload, user);
+  }
+
+  @Get('/inactive/:id')
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Update the status profile' })
+  inactive(@Param('id') id: number) {
+    return this.teamsService.inactive(id);
   }
 }

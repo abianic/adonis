@@ -1,25 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ProfileTypes } from 'src/common/enums/ProfileTypes';
+import { Roles } from 'src/common/enums/Roles';
+import { Status } from 'src/common/enums/status';
 import { paginate } from 'src/common/pagination/paginate';
+import { CreateProfileRbacDto } from 'src/cruds/porfiles-rbacs/dtos/create-profile-rbac.dto';
 import { ProfilesRbacsService } from 'src/cruds/porfiles-rbacs/profiles-rbacs.service';
 import { ProfilesTypesService } from 'src/cruds/profiles-types/profiles-types.service';
-import { Profile } from 'src/cruds/profiles/profile.entity';
+import { CreateProfileDto } from 'src/cruds/profiles/dtos/create-profile.dto';
+import { ProfilesService } from 'src/cruds/profiles/profiles.service';
+import { RolesService } from 'src/cruds/roles/roles.service';
 import { User } from 'src/cruds/users/user.entity';
-import { Equal, In, Repository } from 'typeorm';
+import { Equal, In } from 'typeorm';
 
 @Injectable()
 export class TeamsService {
   constructor(
-    @InjectRepository(Profile)
-    private entityProfileRepository: Repository<Profile>,
+    private profilesService: ProfilesService,
     private profileTypeService: ProfilesTypesService,
     private profilesRbacsService: ProfilesRbacsService,
+    private rolService: RolesService,
   ) {}
 
   async find({ limit, page, search, orderBy, sortedBy }, user: User) {
     const startIndex = (page - 1) * limit;
-    let condition = {};
+    let condition = {
+      status: In([Status.ACTIVE]),
+      children: {
+        status: In([Status.ACTIVE]),
+      },
+    };
 
     // let userId = user.id || null;
 
@@ -50,7 +59,7 @@ export class TeamsService {
       sortObject[orderBy] = sortedBy;
     }
 
-    let data = await this.entityProfileRepository.find({
+    let data = await this.profilesService.find({
       where: condition,
       order: sortObject,
       take: limit,
@@ -60,7 +69,7 @@ export class TeamsService {
       },
     });
 
-    let dataCount = await this.entityProfileRepository.count({
+    let dataCount = await this.profilesService.count({
       where: condition,
     });
 
@@ -68,5 +77,74 @@ export class TeamsService {
       data: data,
       ...paginate(dataCount, page, limit, data.length),
     };
+  }
+
+  async create(payload, user) {
+    let parent = null;
+    await this.profilesService.findById(payload.parent_id).then((p) => {
+      parent = p;
+    });
+
+    let profileType = null;
+    await this.profileTypeService.findByName(ProfileTypes.TEAM).then((pt) => {
+      profileType = pt;
+    });
+
+    let rolOwner = null;
+    await this.rolService.findByName(Roles.OWNER).then((r) => {
+      rolOwner = r;
+    });
+
+    const owner = new User();
+    owner.id = user.id;
+
+    let profileDto = new CreateProfileDto();
+    profileDto.name = payload.name;
+    profileDto.address = payload.address;
+    profileDto.parent = parent;
+    profileDto.owner = owner;
+    profileDto.profileType = profileType;
+
+    let team = null;
+    await this.profilesService
+      .create({
+        name: profileDto.name,
+        address: profileDto.address,
+        owner: profileDto.owner,
+        profileType: profileType,
+        parent: parent,
+      })
+      .then((te) => {
+        team = te;
+      });
+
+    let profileRbacDto = new CreateProfileRbacDto();
+    profileRbacDto.user = owner;
+    profileRbacDto.rol = rolOwner;
+    profileRbacDto.profile = team;
+
+    await this.profilesRbacsService.create(profileRbacDto);
+
+    return team;
+  }
+
+  async inactive(id: number) {
+    const profileIds = [id];
+
+    await this.profilesRbacsService.updatByCriteria(
+      {
+        profile: In(profileIds),
+      },
+      { status: Status.INACTIVE },
+    );
+
+    return this.profilesService.updatByCriteria(
+      {
+        id: In(profileIds),
+      },
+      {
+        status: Status.INACTIVE,
+      },
+    );
   }
 }
