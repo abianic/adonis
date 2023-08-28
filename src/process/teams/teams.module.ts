@@ -2,19 +2,20 @@ import { Module } from '@nestjs/common';
 
 import { TeamsController } from './teams.controller';
 import { TeamsService } from './teams.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Profile } from 'src/cruds/profiles/profile.entity';
 import { ProfilesTypesModule } from 'src/cruds/profiles-types/profiles-types.module';
 import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.module';
+import { ProfilesModule } from 'src/cruds/profiles/profiles.module';
+import { RolesModule } from 'src/cruds/roles/roles.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Profile]),
+    ProfilesModule,
     ProfilesTypesModule,
     ProfilesRbacsModule,
+    RolesModule,
   ],
   controllers: [TeamsController],
   providers: [TeamsService],
-  exports: [],
+  exports: [TeamsService],
 })
 export class TeamsModule {}

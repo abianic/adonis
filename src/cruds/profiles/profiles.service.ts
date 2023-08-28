@@ -18,7 +18,6 @@ import { paginate } from 'src/common/pagination/paginate';
 import { Profile } from './profile.entity';
 import { CreateProfileDto } from './dtos/create-profile.dto';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
-import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
 import { Status } from 'src/common/enums/status';
 
 @Injectable()
@@ -26,8 +25,6 @@ export class ProfilesService {
   constructor(
     @InjectRepository(Profile)
     private entityProfileRepository: Repository<Profile>,
-    @InjectRepository(ProfileRbac)
-    private entityProfileRbacRepository: Repository<ProfileRbac>,
   ) {}
 
   /**

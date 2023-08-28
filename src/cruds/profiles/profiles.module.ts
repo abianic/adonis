@@ -4,10 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Profile } from './profile.entity';
 import { ProfilesService } from './profiles.service';
 import { ProfilesController } from './profiles.controller';
-import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Profile, ProfileRbac])],
+  imports: [TypeOrmModule.forFeature([Profile])],
   controllers: [ProfilesController],
   providers: [ProfilesService],
   exports: [ProfilesService],
