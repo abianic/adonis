@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../cruds/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
-import { ProfilesModule } from 'src/cruds/profiles/profiles.module';
-import { ProfilesTypesModule } from 'src/cruds/profiles-types/profiles-types.module';
-import { RolesModule } from 'src/cruds/roles/roles.module';
-import { ProfilesRbacsModule } from 'src/cruds/porfiles-rbacs/profiles-rbacs.module';
-import { ScheduleModule } from 'src/cruds/schedule/schedule.module';
-import { AvailabilitiesModule } from 'src/cruds/availabilities/availabilities.module';
+import { ProfilesModule } from 'src/profiles/profiles.module';
+import { ProfilesTypesModule } from 'src/profiles-types/profiles-types.module';
+import { RolesModule } from '../roles/roles.module';
+import { ProfilesRbacsModule } from 'src/porfiles-rbacs/profiles-rbacs.module';
+import { ScheduleModule } from 'src/schedule/schedule.module';
+import { AvailabilitiesModule } from 'src/availabilities/availabilities.module';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { AvailabilitiesModule } from 'src/cruds/availabilities/availabilities.mo
     ProfilesRbacsModule,
     RolesModule,
     ScheduleModule,
-    AvailabilitiesModule
+    AvailabilitiesModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],

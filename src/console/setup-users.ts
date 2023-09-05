@@ -1,9 +1,9 @@
-import * as fs from "fs";
+import * as fs from 'fs';
 import * as csvParser from 'csv-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import { UsersService } from '../cruds/users/users.service';
-import { CreateUserDto } from '../cruds/users/create-user.dto'
+import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../users/create-user.dto';
 import { AppService } from '../app.service';
 
 async function parseCSV(filePath: string): Promise<any[]> {
@@ -24,16 +24,13 @@ async function parseCSV(filePath: string): Promise<any[]> {
   });
 }
 
-
 async function bootstrap() {
-  const application = await NestFactory.createApplicationContext(
-    AppModule,
-  );
-  
+  const application = await NestFactory.createApplicationContext(AppModule);
+
   try {
-    let csvFilePath = __dirname+'/../../import_csv_files/default_users.csv';
+    let csvFilePath = __dirname + '/../../import_csv_files/default_users.csv';
     const parsedData = await parseCSV(csvFilePath);
-    for(const value of parsedData){
+    for (const value of parsedData) {
       await processValue(application, value);
     }
   } catch (error) {
@@ -44,17 +41,21 @@ async function bootstrap() {
   process.exit(0);
 }
 
-async function processValue(application, value){
+async function processValue(application, value) {
   const userService = application.get(UsersService);
   let userDto = new CreateUserDto();
   userDto.email = value.email;
   userDto.password = value.password;
-  userDto.name = value.name; console.log(userDto);
-  await userService.createUser(userDto).then(us => {
-    console.log(us);
-  }).catch(e => {
-    console.log(e);
-  });
+  userDto.name = value.name;
+  console.log(userDto);
+  await userService
+    .createUser(userDto)
+    .then((us) => {
+      console.log(us);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 }
 
 bootstrap();
