@@ -89,4 +89,13 @@ export class Profile {
 
   @OneToMany(() => Profile, (user) => user.parent)
   children: Profile[];
+
+  @Column({
+    name: 'slug',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    unique: true,
+  })
+  slug: string;
 }

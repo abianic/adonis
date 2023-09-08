@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProfileTypes } from 'src/common/enums/ProfileTypes';
 import { paginate } from 'src/common/pagination/paginate';
@@ -133,6 +133,7 @@ export class OrganizationsService {
         profileDto.address = payload.address;
         profileDto.owner = user;
         profileDto.profileType = pt;
+        profileDto.slug = payload.slug;
       });
     await this.profilesService.getProfileService().then((p) => {
       profileDto.parent = p;
@@ -164,6 +165,7 @@ export class OrganizationsService {
         owner: profileDto.owner,
         profileType: profileType,
         parent: parent,
+        slug: profileDto.slug + '-team-1',
       })
       .then((te) => {
         profileRbacDto.profile = te;

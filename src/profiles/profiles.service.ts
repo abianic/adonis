@@ -11,6 +11,7 @@ import {
   In,
   FindManyOptions,
   FindOptionsWhere,
+  FindOneOptions,
 } from 'typeorm';
 
 import { paginate } from 'src/common/pagination/paginate';
@@ -119,14 +120,17 @@ export class ProfilesService {
    * @returns Profile
    */
   async create(data: CreateProfileDto) {
-    const { name } = data;
+    console.log('data:', data);
+    const { name, slug } = data;
     console.log(data);
     let profile = await this.entityProfileRepository.findOneBy({
-      name: name,
+      slug: slug,
       status: Status.ACTIVE,
     });
 
-    if (profile) throw new BadRequestException(`Profile already exists`);
+    console.log('profile:', profile);
+
+    if (profile) throw new BadRequestException(`slug already exists`);
 
     const newProfile = this.entityProfileRepository.create({
       ...data,
@@ -261,5 +265,9 @@ export class ProfilesService {
     });
 
     return profiles.filter((profile) => profile.eventTypes.length > 0);
+  }
+
+  async findOne(params: FindOneOptions<Profile>) {
+    return await this.entityProfileRepository.findOne(params);
   }
 }

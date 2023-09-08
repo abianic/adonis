@@ -1,3 +1,3 @@
-id,name,email,password
-1,Cristhian,escipion25@gmail.com,!Prueba1234
-2,Mauricio,mauricioloayzas@mauloasan.com,A#lpsa10qom#S
+id,name,username,email,password
+1,Cristhian,crisgarlez,escipion25@gmail.com,!Prueba1234
+2,Mauricio,mauloasan,mauricioloayzas@mauloasan.com,A#lpsa10qom#S

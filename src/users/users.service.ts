@@ -36,7 +36,7 @@ export class UsersService {
       email: createUserDto.email,
       name: createUserDto.name,
       metadata: '{}',
-      username: null,
+      username: createUserDto.username,
       refreshToken: null,
     });
 

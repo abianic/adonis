@@ -47,6 +47,7 @@ async function processValue(application, value) {
   userDto.email = value.email;
   userDto.password = value.password;
   userDto.name = value.name;
+  userDto.username = value.username;
   console.log(userDto);
   await userService
     .createUser(userDto)

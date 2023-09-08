@@ -84,6 +84,7 @@ export class ProfilesController {
   @Get('user-event-types')
   @UseGuards(AccessTokenGuard)
   async getUserEventTypes(@CurrentUser() user: User) {
+    console.log('Eneriing getUserEventTypes METHOD');
     return this.profilesService.getUserEventTypes(user);
   }
 

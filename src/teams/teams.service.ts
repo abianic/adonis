@@ -25,9 +25,6 @@ export class TeamsService {
     const startIndex = (page - 1) * limit;
     let condition = {
       status: In([Status.ACTIVE]),
-      children: {
-        status: In([Status.ACTIVE]),
-      },
     };
 
     // let userId = user.id || null;
@@ -73,8 +70,23 @@ export class TeamsService {
       where: condition,
     });
 
+    let childrenNumber = 0;
+
+    data.map((org) => {
+      let chlids = org.children.filter((team) => team.status == 'active');
+
+      org.children = chlids;
+
+      childrenNumber = childrenNumber + chlids.length;
+    });
+
+    const organizations = data;
+
     return {
-      data: data,
+      data: {
+        organizations,
+        childrenNumber,
+      },
       ...paginate(dataCount, page, limit, data.length),
     };
   }
@@ -104,6 +116,7 @@ export class TeamsService {
     profileDto.parent = parent;
     profileDto.owner = owner;
     profileDto.profileType = profileType;
+    profileDto.slug = payload.slug;
 
     let team = null;
     await this.profilesService
@@ -113,6 +126,7 @@ export class TeamsService {
         owner: profileDto.owner,
         profileType: profileType,
         parent: parent,
+        slug: profileDto.slug,
       })
       .then((te) => {
         team = te;

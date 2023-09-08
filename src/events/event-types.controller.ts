@@ -48,6 +48,7 @@ export class EventTypesController {
     @Query() paginationDataDto: PaginationParamsDto,
     @CurrentUser() user: User,
   ) {
+    console.log('Eneriing find METHOD');
     return this.eventTypesService.find(paginationDataDto, user);
   }
 

@@ -54,6 +54,7 @@ export class AuthService {
     let profileDto = new CreateProfileDto();
     profileDto.name = createUserDto.name;
     profileDto.owner = newUser;
+    profileDto.slug = createUserDto.username;
 
     await this.profileTypeService.findByName(ProfileTypes.ONEMAN).then((pt) => {
       profileDto.profileType = pt;

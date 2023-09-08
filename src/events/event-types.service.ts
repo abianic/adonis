@@ -21,18 +21,9 @@ export class EventTypesService {
   ) {}
 
   async create(data: CreateEventTypeDto): Promise<EventType> {
-    let eventType = await this.eventTypeRepository.findOne({
-      where: {
-        slug: data.slug,
-      },
-    });
-
-    if (eventType) throw new BadRequestException(`slug already exists`);
-
-    console.log('data:', data);
     const user = new User();
     user.id = data.user.id;
-    let profile = null;
+    let profile: Profile = null;
 
     if (!data.profileId) {
       profile = await this.profileRepository.findOne({
@@ -49,7 +40,14 @@ export class EventTypesService {
       });
     }
 
-    console.log('profile:', profile);
+    let eventType = await this.eventTypeRepository.findOne({
+      where: {
+        slug: data.slug,
+        profile: Equal(profile.id),
+      },
+    });
+
+    if (eventType) throw new BadRequestException(`slug already exists`);
 
     const newEventType = this.eventTypeRepository.create({
       ...data,
