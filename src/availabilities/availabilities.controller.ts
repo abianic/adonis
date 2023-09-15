@@ -59,6 +59,14 @@ export class AvailabilitiesController {
     return this.availabilityService.findAll(scheduleId);
   }
 
+  @Get('bulk')
+  @ApiOperation({ summary: 'List of roles' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  getBulk(@Param('scheduleId') scheduleId: number) {
+    return this.availabilityService.getBulk(scheduleId);
+  }
+
   @Get(':availabilityId')
   @ApiOperation({ summary: 'A availability' })
   @ApiBearerAuth('access-token')
@@ -96,6 +104,19 @@ export class AvailabilitiesController {
       payload.schedule = s;
     });
     return this.availabilityService.create(payload);
+  }
+
+  @Post('bulk')
+  @UseGuards(AccessTokenGuard)
+  async createBulk(
+    @Body() payload: any,
+    @Param('scheduleId') scheduleId: number,
+  ) {
+    console.log('bulk method');
+    console.log('scheduleId:', scheduleId);
+    console.log('payload:', payload);
+    const schedule = await this.scheduleService.findById(scheduleId);
+    return this.availabilityService.createBulk(payload, schedule);
   }
 
   @Put(':id')

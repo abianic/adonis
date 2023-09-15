@@ -105,9 +105,9 @@ export class ProfilesRbacsService {
   async create(data: CreateProfileRbacDto) {
     console.log(data);
     let profileRbac = await this.entityProfileRbacRepository.findOneBy({
-      user: data.user,
+      user: Equal(data.user.id),
       rol: data.rol,
-      profile: data.profile,
+      profile: Equal(data.profile.id),
     });
 
     if (profileRbac) throw new BadRequestException(`Profile already exists`);

@@ -52,6 +52,15 @@ export class Schedule {
   })
   status: Status;
 
+  @ApiProperty({ example: true })
+  @Column({
+    name: 'is_default',
+    type: 'boolean',
+    default: false,
+    nullable: false,
+  })
+  isDefault?: Boolean;
+
   @ApiProperty({ example: User, type: () => User })
   @ManyToOne(() => User)
   @JoinColumn({

@@ -1,13 +1,20 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal } from 'typeorm';
+import {
+  Repository,
+  Equal,
+  FindManyOptions,
+  ObjectId,
+  FindOptionsWhere,
+} from 'typeorm';
 import { paginate } from 'src/common/pagination/paginate';
 
 import { EventType } from './event-type.entity';
 import { CreateEventTypeDto } from './dtos/create-event-type.dto';
 import { Profile } from '../profiles/profile.entity';
 import { User } from '../users/user.entity';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class EventTypesService {
@@ -28,7 +35,7 @@ export class EventTypesService {
     if (!data.profileId) {
       profile = await this.profileRepository.findOne({
         where: {
-          owner: user,
+          owner: Equal(user.id),
           profileType: Equal(5),
         },
       });
@@ -122,12 +129,12 @@ export class EventTypesService {
 
     const profile = await this.profileRepository.findOne({
       where: {
-        owner: user,
+        owner: Equal(user.id),
       },
     });
 
     const eventTypes = await this.eventTypeRepository.findBy({
-      profile: profile,
+      profile: Equal(profile.id),
     });
 
     console.log(
@@ -139,5 +146,25 @@ export class EventTypesService {
       name: user?.name,
       eventTypes,
     };
+  }
+
+  async findAny(params: FindManyOptions<EventType>) {
+    return await this.eventTypeRepository.find(params);
+  }
+
+  async updateAny(
+    criteria:
+      | string
+      | string[]
+      | number
+      | number[]
+      | Date
+      | Date[]
+      | ObjectId
+      | ObjectId[]
+      | FindOptionsWhere<EventType>,
+    partialEntity: QueryDeepPartialEntity<EventType>,
+  ) {
+    return await this.eventTypeRepository.update(criteria, partialEntity);
   }
 }

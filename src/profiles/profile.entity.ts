@@ -17,6 +17,7 @@ import { EventType } from '../events/event-type.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProfileType } from '../profiles-types/profile-type.entity';
 import { ProfileRbac } from '../porfiles-rbacs/profile-rbac.entity';
+import { Schedule } from '../schedule/schedule.entity';
 
 @Entity()
 export class Profile {
@@ -98,4 +99,7 @@ export class Profile {
     unique: true,
   })
   slug: string;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.profile)
+  schedules: Schedule[];
 }

@@ -20,12 +20,7 @@ export class CreateScheduleDto {
   @ApiProperty({ description: `schedule's address` })
   name: string;
 
-  @IsNotEmpty()
-  @IsObject()
-  @ApiProperty({ description: `schedule's profile` })
-  profile: Profile;
-
   @IsOptional()
-  @IsObject()
-  owner: User;
+  @IsNumber()
+  profileId: number;
 }

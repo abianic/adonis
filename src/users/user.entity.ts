@@ -33,7 +33,7 @@ export class User {
   })
   updateAt: Date;
 
-  @ApiProperty({ example: "TorcuatoStudio" })
+  @ApiProperty({ example: 'TorcuatoStudio' })
   @Column({
     name: 'username',
     type: 'varchar',
@@ -43,15 +43,15 @@ export class User {
   })
   username: string;
 
-  @ApiProperty({ example: "Torcuato" })
+  @ApiProperty({ example: 'Torcuato' })
   @Column({ name: 'name', type: 'varchar', length: 255 })
   name: string;
 
-  @ApiProperty({ example: "torcuato@studuio.test" })
+  @ApiProperty({ example: 'torcuato@studuio.test' })
   @Column({ name: 'email', type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @ApiProperty({ example: "encrypted" })
+  @ApiProperty({ example: 'encrypted' })
   @Column({ name: 'password', type: 'varchar', length: 255, unique: true })
   password: string;
 
@@ -59,11 +59,13 @@ export class User {
   @Column('jsonb', { name: 'metadata', nullable: true, default: {} })
   metadata: string;
 
-  @ApiProperty({ example: "string" })
+  @ApiProperty({ example: 'string' })
   @Column({ name: 'refresh_token', type: 'text', nullable: true })
   refreshToken: string;
 
   @ApiProperty({ example: ProfileRbac })
   @OneToMany(() => ProfileRbac, (profileRbac) => profileRbac.user)
   profilesRbacs: ProfileRbac[];
+
+  profileId: number;
 }

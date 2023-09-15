@@ -176,10 +176,9 @@ export class OrganizationsService {
 
     let scheduleDto = new CreateScheduleDto();
     scheduleDto.name = 'Default';
-    scheduleDto.owner = user;
-    scheduleDto.profile = profileRbacDto.profile;
+    scheduleDto.profileId = profileRbacDto.profile.id;
     let newSchedule = null;
-    await this.scheduleService.create(scheduleDto).then((s) => {
+    await this.scheduleService.create(scheduleDto, user).then((s) => {
       newSchedule = s;
     });
 

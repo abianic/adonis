@@ -270,4 +270,57 @@ export class ProfilesService {
   async findOne(params: FindOneOptions<Profile>) {
     return await this.entityProfileRepository.findOne(params);
   }
+
+  async getUserProfile(user: User) {
+    const profile = await this.entityProfileRepository.findOne({
+      where: [
+        { profileType: Equal(5), owner: Equal(user.id), status: Status.ACTIVE },
+      ],
+      relations: {},
+    });
+
+    return profile;
+  }
+
+  async getUserSchedules(user: User) {
+    const roles = await this.rolesService.find({
+      where: [{ name: Roles.OWNER }, { name: Roles.ADMIN }],
+    });
+
+    const rolesIds = roles.map((role) => role.id);
+
+    const profilerbscs = await this.profilesRbacsService.find({
+      where: {
+        user: Equal(user.id),
+        rol: In(rolesIds),
+      },
+      relations: {
+        profile: true,
+      },
+    });
+
+    const profileIds = profilerbscs.map((p) => p.profile.id);
+
+    const profiles = await this.entityProfileRepository.find({
+      where: [
+        { profileType: Equal(5), owner: Equal(user.id), status: Status.ACTIVE },
+        { id: In(profileIds), profileType: Equal(3), status: Status.ACTIVE },
+      ],
+      relations: {
+        schedules: true,
+      },
+    });
+
+    let data = profiles.filter((profile) => profile.schedules.length > 0);
+
+    data.map((profile) => {
+      let chlids = profile.schedules.filter(
+        (schedule) => schedule.status == 'active',
+      );
+
+      profile.schedules = chlids;
+    });
+
+    return data;
+  }
 }

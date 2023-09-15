@@ -78,6 +78,19 @@ export class ScheduleController {
     );
   }
 
+  @Get('user-schedules')
+  @UseGuards(AccessTokenGuard)
+  getUserSchedules(@CurrentUser() user: User) {
+    console.log('controller:user:', user.profileId);
+    return this.scheduleService.getUserSchedules(user.profileId);
+  }
+
+  @Get('/inactive/:id')
+  @UseGuards(AccessTokenGuard)
+  inactive(@Param('id') id: number) {
+    return this.scheduleService.inactive(id);
+  }
+
   @Get(':scheduleId')
   @ApiOperation({ summary: 'A schedule' })
   @ApiBearerAuth('access-token')
@@ -105,10 +118,29 @@ export class ScheduleController {
   @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access-token')
   async create(@Body() payload: CreateScheduleDto, @CurrentUser() user) {
-    await this.usersService.findById(user.sub).then((u) => {
-      payload.owner = u;
-    });
-    return this.scheduleService.create(payload);
+    return this.scheduleService.create(payload, user);
+  }
+
+  @Post('bulk')
+  @ApiOperation({ summary: 'Create an organization' })
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: Schedule,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized Request',
+    type: UnauthorizedResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: BadRequestResponse,
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth('access-token')
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access-token')
+  async createBulk(@Body() payload: CreateScheduleDto, @CurrentUser() user) {
+    return this.scheduleService.createBulk(payload, user);
   }
 
   @Put(':id')

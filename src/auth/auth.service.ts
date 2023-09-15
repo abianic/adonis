@@ -41,8 +41,6 @@ export class AuthService {
 
   async signUp(createUserDto: CreateUserDto): Promise<ITokens> {
     const newUser = await this.usersService.createUser(createUserDto);
-    const tokens = await this.getTokens(newUser);
-    await this.updateRefreshToken(newUser.id, tokens.refreshToken);
 
     let profileRbacDto = new CreateProfileRbacDto();
     profileRbacDto.user = newUser;
@@ -68,14 +66,15 @@ export class AuthService {
       profileRbacDto.profile = og;
     });
 
+    const userProfileId = profileRbacDto.profile.id;
+
     await this.profileRbacService.create(profileRbacDto);
 
     let scheduleDto = new CreateScheduleDto();
     scheduleDto.name = 'Default';
-    scheduleDto.owner = newUser;
-    scheduleDto.profile = profileRbacDto.profile;
+    scheduleDto.profileId = profileRbacDto.profile.id;
     let newSchedule = null;
-    await this.ScheduleService.create(scheduleDto).then((s) => {
+    await this.ScheduleService.create(scheduleDto, newUser).then((s) => {
       newSchedule = s;
     });
 
@@ -90,6 +89,10 @@ export class AuthService {
       await this.AvailabilityService.create(availabilityDto);
     }
 
+    const tokens = await this.getTokens(newUser, userProfileId);
+
+    await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+
     return tokens;
   }
 
@@ -103,7 +106,10 @@ export class AuthService {
     );
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');
-    const tokens = await this.getTokens(user);
+
+    const profile = await this.profilesService.getUserProfile(user);
+
+    const tokens = await this.getTokens(user, profile.id);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -119,7 +125,10 @@ export class AuthService {
     );
 
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
-    const tokens = await this.getTokens(user);
+
+    const profile = await this.profilesService.getUserProfile(user);
+
+    const tokens = await this.getTokens(user, profile.id);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -128,7 +137,7 @@ export class AuthService {
     return bcrypt.compare(value, hashedValue);
   }
 
-  async getTokens(user: User): Promise<ITokens> {
+  async getTokens(user: User, profileId: number): Promise<ITokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -136,6 +145,7 @@ export class AuthService {
           username: user.username,
           email: user.email,
           name: user.name,
+          profileId: profileId,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),

@@ -88,6 +88,13 @@ export class ProfilesController {
     return this.profilesService.getUserEventTypes(user);
   }
 
+  @Get('user-schedules')
+  @UseGuards(AccessTokenGuard)
+  async getUserSchedules(@CurrentUser() user: User) {
+    console.log('Eneriing getUserEventTypes METHOD');
+    return this.profilesService.getUserSchedules(user);
+  }
+
   @Get(':profileId')
   @ApiOperation({ summary: 'A profile' })
   @ApiBearerAuth('access-token')
