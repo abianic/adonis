@@ -211,4 +211,11 @@ export class ScheduleController {
         return error;
       });
   }
+
+  @Put(':id/set-default')
+  @UseGuards(AuthGuard('jwt'))
+  setDefault(@Param('id') id: number, @Param('isDefault') isDefault: boolean) {
+    return this.scheduleService.setDefault(id, isDefault);
+  }
+  
 }

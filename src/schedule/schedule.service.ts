@@ -277,4 +277,29 @@ export class ScheduleService {
     console.log('save');
     return this.entityScheduleRepository.save(scheduleToDelete);
   }
+
+  async setDefault(id: number, isDefault: boolean) {
+
+    const scheduleToUpdate = await this.entityScheduleRepository.findOne({
+      select: {},
+      where: { id: id },
+      relations: {
+        profile: true,
+      },
+    });
+
+    if (isDefault) {
+      await this.entityScheduleRepository.update({
+        profile: Equal(scheduleToUpdate.profile.id),
+        status: Status.ACTIVE
+      }, {
+        isDefault: false
+      });
+    }
+
+    
+
+    scheduleToUpdate.isDefault = isDefault;
+    return this.entityScheduleRepository.save(scheduleToUpdate);
+  }
 }
